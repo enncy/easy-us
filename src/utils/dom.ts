@@ -1,4 +1,5 @@
 /* eslint-disable no-undef */
+import { HeaderElement } from '../elements';
 import { CustomElementTagMap } from '../elements/interface';
 
 /**
@@ -11,7 +12,7 @@ export type CustomElementStyleAttrs<E extends Record<string, any>> = {
 export type AllElementTagMaps = HTMLElementTagNameMap & CustomElementTagMap;
 export type AllElementTagKeys = keyof AllElementTagMaps;
 /** 子元素 */
-export type ElementChildren = (string | Node)[] | string;
+export type ElementChildren = (string | Node | { new (): HTMLElement })[] | string;
 /** 元素属性 */
 export type ElementAttrs<K extends AllElementTagKeys> = CustomElementStyleAttrs<Partial<AllElementTagMaps[K]>>;
 
@@ -130,10 +131,16 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	} else {
 		name = element;
 	}
-	const el: HTMLElement = document.createElement(name) as any;
+	const el = document.createElement(name) as HTMLElement;
 	if (attrsOrChildren) {
 		if (Array.isArray(attrsOrChildren)) {
-			el.append(...attrsOrChildren);
+			for (const child of attrsOrChildren) {
+				if (typeof child === 'function') {
+					el.append(document.createElement(child.name));
+				} else {
+					el.append(child);
+				}
+			}
 		} else if (typeof attrsOrChildren === 'string') {
 			el.append(attrsOrChildren);
 		} else {
@@ -155,13 +162,21 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 		if (typeof childrenOrHandler === 'function') {
 			childrenOrHandler.call(el as any, el as any);
 		} else if (Array.isArray(childrenOrHandler)) {
-			el.append(...childrenOrHandler);
+			for (const child of childrenOrHandler) {
+				if (typeof child === 'function') {
+					el.append(document.createElement(child.name));
+				} else {
+					el.append(child);
+				}
+			}
 		} else if (typeof childrenOrHandler === 'string') {
 			el.append(childrenOrHandler);
 		}
 	}
 	return element as K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 }
+
+h('div', [h(HeaderElement)]);
 
 /**
  * 选择元素，效果等同于 document.querySelector(selector)
