@@ -1,5 +1,5 @@
 import { StoreProvider } from '../interfaces';
-import { $creator } from '../utils/creator';
+import { $ui } from '../utils/ui';
 import { CustomElementStyleAttrs, h } from '../utils/dom';
 
 import { ConfigTagMap } from './configs/interface';
@@ -163,7 +163,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 		}
 
 		// 处理提示
-		$creator.tooltip(this.provider);
+		$ui.tooltip(this.provider);
 
 		/**
 		 * 触发输入组件的加载回调

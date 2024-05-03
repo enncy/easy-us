@@ -1,7 +1,7 @@
 import { cors, Project, Script, StoreProvider } from '.';
 import { ContainerElement, definedCustomElements, MessageElement, ModalElement } from '../elements';
 import { DropdownElement } from '../elements/dropdown';
-import { $, $creator, $gm, h, enableElementDraggable } from '../utils';
+import { $, $ui, $gm, h, enableElementDraggable } from '../utils';
 
 const minimizeSvg =
 	'<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 13H5v-2h14v2z"/></svg>';
@@ -42,7 +42,7 @@ export type ModalAttrs = Pick<
 	duration?: number;
 };
 
-export type MessageAttrs =  string | Pick<MessageElement, 'duration' | 'onClose' | 'content' | 'closeable'>;
+export type MessageAttrs = string | Pick<MessageElement, 'duration' | 'onClose' | 'content' | 'closeable'>;
 
 /**
  * Script唯一识别码，通过 namespace 或者 projectName-name 来进行判断
@@ -220,7 +220,7 @@ export class CustomWindow {
 
 	private initHeader(urls: string[], currentPanelName: string) {
 		/** 版本  */
-		const profile = $creator.tooltip(
+		const profile = $ui.tooltip(
 			h('div', { className: 'profile', title: '菜单栏（可拖动区域）' }, this.config.render.title || '无标题')
 		);
 
@@ -278,7 +278,7 @@ export class CustomWindow {
 		/** 窗口是否最小化 */
 		const isMinimize = () => this.config.store.getVisual() === 'minimize';
 		/** 窗口状态切换按钮 */
-		const visualSwitcher = $creator.tooltip(
+		const visualSwitcher = $ui.tooltip(
 			h('div', {
 				className: 'switch ',
 				title: isMinimize() ? '点击展开窗口' : '点击最小化窗口',
@@ -313,7 +313,7 @@ export class CustomWindow {
 
 					if (isCurrentPanel(project.name, script, currentPanelName)) {
 						// 生成脚本面板
-						const panel = $creator.scriptPanel(script, this.inputStoreProvider);
+						const panel = $ui.scriptPanel(script, this.inputStoreProvider);
 						script.projectName = project.name;
 						script.panel = panel;
 						script.header = this.container.header;
@@ -475,8 +475,8 @@ export class CustomWindow {
 	 * 消息推送
 	 */
 	message(type: MessageElement['type'], attrs: MessageAttrs) {
-		if(typeof attrs === 'string'){
-			attrs = { content: attrs }; 
+		if (typeof attrs === 'string') {
+			attrs = { content: attrs };
 		}
 		const message = h('message-element', { type, ...attrs });
 		this.messageContainer.append(message);

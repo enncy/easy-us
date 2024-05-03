@@ -1,5 +1,5 @@
 export * from './common';
-export * from './creator';
+export * from './ui';
 export * from './dom';
 export * from './elements';
 export * from './tampermonkey';

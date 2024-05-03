@@ -1,5 +1,5 @@
 import { $ } from '../utils/common';
-import { $creator } from '../utils/creator';
+import { $ui } from '../utils/ui';
 import { h } from '../utils/dom';
 import { HeaderElement } from './header';
 import { IElement } from './interface';
@@ -7,7 +7,7 @@ import { IElement } from './interface';
 /** 面板主体元素 */
 export class ContainerElement extends IElement {
 	/** 头部 */
-	header: HeaderElement = $creator.tooltip(h('header-element', { title: '菜单栏-可拖动区域' }));
+	header: HeaderElement = $ui.tooltip(h('header-element', { title: '菜单栏-可拖动区域' }));
 	/** 内容 */
 	body: HTMLDivElement = h('div', { className: 'body', clientHeight: window.innerHeight / 2 });
 	/** 底部 */

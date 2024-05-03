@@ -1,6 +1,6 @@
 import { ModalElement } from '../elements';
 import { Script, ScriptConfigsProvider } from '../interfaces/script';
-import { $creator } from '../utils/creator';
+import { $ui } from '../utils/ui';
 import { h } from '../utils/dom';
 import { MessageAttrs, ModalAttrs, ScriptIdentify } from '../interfaces/custom-window';
 import { $win } from '../utils/start';
@@ -18,7 +18,7 @@ export const createRenderScript = (config?: {
 		namespace: config?.namespace || 'render.panel',
 		configs: config?.configs || {
 			notes: {
-				defaultValue: $creator.notes([
+				defaultValue: $ui.notes([
 					[
 						'如果需要隐藏整个窗口，可以点击下方隐藏按钮，',
 						'隐藏后可以快速三击屏幕中的任意地方',
@@ -90,7 +90,7 @@ export const createRenderScript = (config?: {
 			closeBtn.onclick = () => {
 				if (this.cfg.firstCloseAlert) {
 					$win?.modal('confirm', {
-						content: $creator.notes([
+						content: $ui.notes([
 							'隐藏脚本页面后，快速点击页面三下（可以在悬浮窗设置中调整次数）即可重新显示脚本。如果三下无效，可以尝试删除脚本重新安装。',
 							'请确认是否关闭。（此后不再显示此弹窗）'
 						]),
