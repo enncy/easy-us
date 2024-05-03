@@ -53,10 +53,29 @@ export type VisualType = 'normal' | 'minimize' | 'close';
 
 export type CustomWindowRenderConfig = {
 	render: {
+		/**
+		 * 窗口标题
+		 */
 		title: string;
+		/**
+		 * 默认面板名
+		 */
 		defaultPanelName: string;
+		/**
+		 * 窗口样式
+		 */
 		styles: string[];
+		/**
+		 * 窗口显示连点（次数）
+		 */
 		switchPoint: number;
+		/**
+		 * 窗口显示快捷键
+		 */
+		switchKey: string;
+		/**
+		 * 字体大小
+		 */
 		fontsize: number;
 	};
 	store: {
@@ -181,7 +200,7 @@ export class CustomWindow {
 		window.addEventListener(
 			'keydown',
 			(e) => {
-				if (e.ctrlKey && e.key === 'o') {
+				if (e.ctrlKey && e.key === config.render.switchKey) {
 					e.stopPropagation();
 					e.preventDefault();
 

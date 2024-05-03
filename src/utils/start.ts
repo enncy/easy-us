@@ -187,7 +187,8 @@ function mount(startConfig: StartConfig) {
 				styles: renderConfig.styles,
 				defaultPanelName: renderConfig.defaultPanelName,
 				fontsize: RenderScript.cfg.fontsize,
-				switchPoint: RenderScript.cfg.switchPoint
+				switchPoint: RenderScript.cfg.switchPoint,
+				switchKey: 'o'
 			},
 			store: {
 				getPosition: () => {

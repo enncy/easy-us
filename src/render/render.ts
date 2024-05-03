@@ -105,11 +105,6 @@ export const createRenderScript = (config?: {
 			};
 
 			panel.body.replaceChildren(h('hr'), closeBtn);
-		},
-		oncomplete(...args) {
-			setTimeout(() => {
-				console.log('$win', $win);
-			}, 3000);
 		}
 	});
 
