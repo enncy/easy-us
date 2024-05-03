@@ -34,7 +34,7 @@ type CustomElementConstructor = { new (): HTMLElement };
  */
 export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	element: K,
-	attrs: K extends AllElementTagKeys
+	attrs?: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
 		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
@@ -75,7 +75,7 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
  */
 export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	element: K,
-	attrs?: K extends AllElementTagKeys
+	attrs: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
 		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
@@ -90,7 +90,7 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
  */
 export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	element: K,
-	attrs?: K extends AllElementTagKeys
+	attrs: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
 		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
@@ -105,7 +105,7 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
  */
 export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	element: K,
-	children?: ElementChildren,
+	children: ElementChildren,
 	handler?: ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**

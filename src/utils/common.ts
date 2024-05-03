@@ -122,7 +122,6 @@ export const $ = {
 	random(min: number, max: number) {
 		return Math.round(Math.random() * (max - min)) + min;
 	},
-
 	/**
 	 * 暂停
 	 * @param period 毫秒
@@ -132,26 +131,12 @@ export const $ = {
 			setTimeout(resolve, period);
 		});
 	},
-
 	/**
 	 * 当前是否处于浏览器环境
 	 */
 	isInBrowser(): boolean {
 		return typeof window !== 'undefined' && typeof window.document !== 'undefined';
 	},
-
-	/**
-	 * 使元素变成纯文本对象，（跨域时对象上下文会被销毁）
-	 * @param el 元素
-	 */
-	elementToRawObject(el: HTMLElement | undefined | null) {
-		return {
-			innerText: el?.innerText,
-			innerHTML: el?.innerHTML,
-			textContent: el?.textContent
-		} as any;
-	},
-
 	/**
 	 * 监听页面宽度变化
 	 * @param el 任意元素，如果此元素被移除，则不执行 resize 回调
