@@ -16,69 +16,136 @@ export type ElementChildren = (string | Node)[] | string;
 export type ElementAttrs<K extends AllElementTagKeys> = CustomElementStyleAttrs<Partial<AllElementTagMaps[K]>>;
 
 /** 元素处理回调 */
-export type ElementHandler<K extends AllElementTagKeys> = (
-	this: AllElementTagMaps[K],
-	el: AllElementTagMaps[K]
+export type ElementHandler<K extends AllElementTagKeys | CustomElementConstructor> = (
+	this: K extends AllElementTagKeys ? AllElementTagMaps[K] : AllElementTagMaps['div'],
+	el: K extends AllElementTagKeys ? AllElementTagMaps[K] : AllElementTagMaps['div']
 ) => void;
 
+type CustomElementConstructor = { new (): HTMLElement };
+
+/**
+ * ==================== 两个参数的情况 ====================
+ */
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element  	标签名或者自定义元素构造函数
+ * @param attrs  	元素属性
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	attrs: K extends AllElementTagKeys
+		? ElementAttrs<K>
+		: K extends abstract new () => any
+		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+		: unknown
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element	标签名或者自定义元素构造函数
+ * @param children	子元素列表
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	children?: ElementChildren
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element  				标签名或者自定义元素构造函数
+ * @param attrsOrChildren 		元素属性，或者子元素列表，或者字符串
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	attrsOrChildren?:
+		| (K extends AllElementTagKeys
+				? ElementAttrs<K>
+				: K extends abstract new () => any
+				? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+				: unknown)
+		| ElementChildren
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+/**
+ * ==================== 三个参数的情况 ====================
+ */
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element 	标签名或者自定义元素构造函数
+ * @param attrs 	元素属性
+ * @param children 	子元素列表
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	attrs?: K extends AllElementTagKeys
+		? ElementAttrs<K>
+		: K extends abstract new () => any
+		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+		: unknown,
+	children?: ElementChildren
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element  	标签名或者自定义元素构造函数
+ * @param attrs  	元素属性
+ * @param handler  	元素生成的回调函数
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	attrs?: K extends AllElementTagKeys
+		? ElementAttrs<K>
+		: K extends abstract new () => any
+		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+		: unknown,
+	handler?: ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+/**
+ * 创建元素，效果等同于 document.createElement
+ * @param element  	标签名或者自定义元素构造函数
+ * @param children 	子元素列表
+ * @param handler 	元素生成的回调函数
+ */
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	children?: ElementChildren,
+	handler?: ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**
  * 创建元素，效果等同于 document.createElement(tagName, options)
- * @param tagName 标签名
+ * @param element 标签名或者自定义元素构造函数
  * @param attrsOrChildren 元素属性，或者子元素列表，或者字符串
  * @param childrenOrHandler 子元素列表，或者元素生成的回调函数
  */
-export function h<K extends AllElementTagKeys>(tagName: K, children?: ElementChildren): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(tagName: K, attrs?: ElementAttrs<K>): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	attrsOrChildren?: ElementAttrs<K> | ElementChildren
-): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	attrs?: ElementAttrs<K>,
-	children?: (string | HTMLElement)[] | string
-): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	attrs?: ElementAttrs<K>,
-	handler?: ElementHandler<K>
-): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	children?: ElementChildren,
-	handler?: ElementHandler<K>
-): AllElementTagMaps[K];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	attrs?: ElementAttrs<K>,
-	childrenOrHandler?: ElementChildren | ElementHandler<K>
-): AllElementTagMaps[K];
-export function h(
-	tagName: string,
-	attrs?: ElementAttrs<'div'>,
-	childrenOrHandler?: ElementChildren | ElementHandler<'div'>
-): AllElementTagMaps['div'];
-export function h<K extends AllElementTagKeys>(
-	tagName: K,
-	attrsOrChildren?: ElementAttrs<K> | ElementChildren,
-	childrenOrHandler?: ElementChildren | ElementHandler<K>
-): AllElementTagMaps[K] {
-	const element: AllElementTagMaps[K] = document.createElement(tagName) as any;
+export function h<K extends AllElementTagKeys | CustomElementConstructor>(
+	element: K,
+	attrsOrChildren?:
+		| (K extends AllElementTagKeys
+				? ElementAttrs<K>
+				: K extends abstract new () => any
+				? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+				: unknown)
+		| ElementChildren,
+	childrenOrHandler?: ElementChildren | ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
+): K extends AllElementTagKeys ? AllElementTagMaps[K] : K {
+	let name = '';
+	if (typeof element === 'function') {
+		name = element.name;
+	} else {
+		name = element;
+	}
+	const el: HTMLElement = document.createElement(name) as any;
 	if (attrsOrChildren) {
 		if (Array.isArray(attrsOrChildren)) {
-			element.append(...attrsOrChildren);
+			el.append(...attrsOrChildren);
 		} else if (typeof attrsOrChildren === 'string') {
-			element.append(attrsOrChildren);
+			el.append(attrsOrChildren);
 		} else {
 			const attrs = attrsOrChildren;
 			/** 设置属性 */
 			for (const key in attrs) {
 				if (Object.prototype.hasOwnProperty.call(attrs, key)) {
 					if (key === 'style') {
-						Object.assign(element.style, attrs[key]);
+						Object.assign(el.style, attrs[key]);
 					} else {
 						const value = attrs[key];
-						Reflect.set(element, key, value);
+						Reflect.set(el, key, value);
 					}
 				}
 			}
@@ -86,15 +153,14 @@ export function h<K extends AllElementTagKeys>(
 	}
 	if (childrenOrHandler) {
 		if (typeof childrenOrHandler === 'function') {
-			childrenOrHandler.call(element, element);
+			childrenOrHandler.call(el as any, el as any);
 		} else if (Array.isArray(childrenOrHandler)) {
-			element.append(...childrenOrHandler);
+			el.append(...childrenOrHandler);
 		} else if (typeof childrenOrHandler === 'string') {
-			element.append(childrenOrHandler);
+			el.append(childrenOrHandler);
 		}
 	}
-
-	return element;
+	return element as K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 }
 
 /**
@@ -155,7 +221,4 @@ export function enableElementDraggable(header: HTMLElement, target: HTMLElement,
 		document.onmouseup = null;
 		document.onmousemove = null;
 	}
-
-
-	h('asdasd')
 }
