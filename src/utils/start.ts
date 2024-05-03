@@ -176,6 +176,10 @@ function mount(startConfig: StartConfig) {
 	$store.setTab($const.TAB_URLS, []);
 	if (self === top) {
 		const { projects, renderConfig, RenderScript } = startConfig;
+		if (typeof RenderScript === 'undefined') {
+			console.warn('the script will not have ui because the RenderScript is not defined.');
+			return;
+		}
 		const scripts = $.getMatchedScripts(projects, [location.href]).filter((s) => !!s.hideInPanel === false);
 		if (scripts.length <= 0) {
 			return;
