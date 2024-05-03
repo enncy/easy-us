@@ -173,10 +173,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 			el.append(childrenOrHandler);
 		}
 	}
-	return element as K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
+	return el as K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 }
-
-h('div', [h(HeaderElement)]);
 
 /**
  * 选择元素，效果等同于 document.querySelector(selector)
