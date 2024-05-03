@@ -1,0 +1,12 @@
+{
+	// Comments are supported, like tsconfig.json
+	"$schema": "https://typedoc.org/schema.json",
+	"entryPoints": ["./src/index.ts"],
+	"out": "docs",
+	"cleanOutputDir": true,
+	"darkHighlightTheme": "github-dark",
+	"lightHighlightTheme": "github-light",
+	"name": "EUS - API",
+	"readme": "../../README.md",
+	"kindSortOrder": ["Variable", "Property", "Method", "Function"]
+}
