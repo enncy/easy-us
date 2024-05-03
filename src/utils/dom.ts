@@ -1,6 +1,6 @@
 /* eslint-disable no-undef */
-import { HeaderElement } from '../elements';
 import { CustomElementTagMap } from '../elements/interface';
+import { resolveCustomElementName } from './common';
 
 /**
  * 可自定义元素样式的属性
@@ -127,7 +127,7 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K {
 	let name = '';
 	if (typeof element === 'function') {
-		name = element.name;
+		name = resolveCustomElementName(element, '-');
 	} else {
 		name = element;
 	}

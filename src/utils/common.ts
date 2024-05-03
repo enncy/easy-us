@@ -176,7 +176,7 @@ export const $ = {
 	/** 加载自定义元素 */
 	loadCustomElements(elements: { new (): HTMLElement }[]) {
 		for (const element of elements) {
-			const name = humpToTarget(element.name, '-'); 
+			const name = resolveCustomElementName(element, '-');
 			// 不能重复加载
 			if (customElements.get(name) === undefined) {
 				customElements.define(name, element);
@@ -227,8 +227,13 @@ export const $ = {
 	}
 };
 
-function humpToTarget(value: string, target: string) {
-	return value
+/**
+ * 将每个驼峰前面添加目标字符串，用于自定义元素名的转换
+ * @param el  自定义元素
+ * @param target 目标字符串
+ */
+export function resolveCustomElementName<T extends HTMLElement = HTMLElement>(el: { new (): T }, target: string) {
+	return el.name
 		.replace(/([A-Z])/g, target + '$1')
 		.toLowerCase()
 		.split(target)
