@@ -2,7 +2,7 @@ import { ConfigElement } from '../elements/config';
 import { Script, StoreProvider } from '../interfaces';
 import { Config } from '../interfaces/config';
 import { $ } from './common';
-import { h } from './dom';
+import { CustomElementStyleAttrs, ElementHandler, h } from './dom';
 import { $elements } from './elements';
 import { $gm } from './tampermonkey';
 export interface PreventTextOptions {
@@ -240,6 +240,17 @@ export const $ui = {
 					div.append(h('span', [options?.separator ?? ' ']));
 				}
 			}
+		});
+	},
+	button(
+		text?: string,
+		attrs?: CustomElementStyleAttrs<Omit<Partial<HTMLInputElement>, 'type'>> | undefined,
+		handler?: ElementHandler<'input'> | undefined
+	) {
+		return h('input', { type: 'button', ...attrs }, function (btn) {
+			btn.value = text || '';
+			btn.classList.add('base-style-button');
+			handler?.apply(this, [btn]);
 		});
 	}
 };
