@@ -9,7 +9,7 @@
 		"dist"
 	],
 	"scripts": {
-		"build": "vite build",
+		"build": "tsc && vite build",
 		"dev": "vite build -w",
 		"init-commitizen": "commitizen init cz-conventional-changelog --save --save-exact"
 	},

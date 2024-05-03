@@ -7,6 +7,8 @@ src/assets/css
 
 docs/
 
+/lib
+
 # Logs
 logs
 *.log
