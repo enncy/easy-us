@@ -14,5 +14,11 @@
 	"[typescript]": {
 		"editor.defaultFormatter": "esbenp.prettier-vscode"
 	},
-	"editor.wordBasedSuggestions": "off"
+	"editor.wordBasedSuggestions": "off",
+	/** 样式自动生成 */
+	"less.compile": {
+		"compress": false,
+		"sourceMap": false,
+		"out": "../css/"
+	}
 }

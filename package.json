@@ -6,7 +6,8 @@
 	"types": "./lib/index.d.ts",
 	"files": [
 		"lib",
-		"dist"
+		"dist",
+		"assets"
 	],
 	"scripts": {
 		"build": "tsc && vite build",
@@ -15,7 +16,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/ocsjs/ocsjs.git"
+		"url": "git+https://github.com/enncy/easy-us.git"
 	},
 	"keywords": [
 		"script",
@@ -28,9 +29,9 @@
 	"author": "enncy",
 	"license": "MIT",
 	"bugs": {
-		"url": "https://github.com/ocsjs/ocsjs/issues"
+		"url": "https://github.com/enncy/easy-us/issues"
 	},
-	"homepage": "https://github.com/ocsjs/ocsjs#readme",
+	"homepage": "https://github.com/enncy/easy-us#readme",
 	"devDependencies": {
 		"@types/event-emitter": "^0.3.3",
 		"@types/lodash": "^4.14.194",
