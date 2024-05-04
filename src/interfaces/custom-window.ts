@@ -494,12 +494,12 @@ function handleLowLevelBrowser() {
 
 /**
  * 创建一个模态框代替原生的 alert, confirm, prompt
- * 如果 parent 为空，优先挂载到全局元素上，否则挂载到 document.body
+ * 如果已经调用了 start 函数那么则会挂载到自定义窗口中，否则可以挂载到全局元素中（可以修改 $elements.root 实现自定义挂载位置），或者 document.body 上
  */
 export function modal(
 	type: ModalElement['type'],
 	attrs: ModalAttrs,
-	parent: HTMLElement | Document | ShadowRoot = $elements.root || document.body
+	parent: HTMLElement | Document | ShadowRoot = $win?.root || $elements.root || document.body
 ) {
 	const {
 		maskCloseable = true,

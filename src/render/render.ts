@@ -109,11 +109,7 @@ export const createRenderScript = (config?: {
 		}
 	});
 
-function _modal(
-	type: ModalElement['type'],
-	attrs: ModalAttrs,
-	parent: HTMLElement | Document | ShadowRoot = document.body
-) {
+function _modal(type: ModalElement['type'], attrs: ModalAttrs, parent?: HTMLElement | Document | ShadowRoot) {
 	if (self === top) {
 		return modal(type, attrs, parent);
 	} else {
@@ -132,10 +128,10 @@ function _modal(
  * 打开弹窗，如果调用时不在顶级窗口，则会通过跨域通信发送消息
  */
 export const $modal = {
-	confirm: (attrs: ModalAttrs, parent = $win?.root) => _modal('confirm', attrs, parent),
-	alert: (attrs: ModalAttrs, parent = $win?.root) => _modal('alert', attrs, parent),
-	prompt: (attrs: ModalAttrs, parent = $win?.root) => _modal('prompt', attrs, parent),
-	simple: (attrs: ModalAttrs, parent = $win?.root) => _modal('simple', attrs, parent)
+	confirm: (attrs: ModalAttrs, parent?: HTMLElement | Document | ShadowRoot) => _modal('confirm', attrs, parent),
+	alert: (attrs: ModalAttrs, parent?: HTMLElement | Document | ShadowRoot) => _modal('alert', attrs, parent),
+	prompt: (attrs: ModalAttrs, parent?: HTMLElement | Document | ShadowRoot) => _modal('prompt', attrs, parent),
+	simple: (attrs: ModalAttrs, parent?: HTMLElement | Document | ShadowRoot) => _modal('simple', attrs, parent)
 };
 
 function _message(type: 'info' | 'success' | 'warn' | 'error', attrs: MessageAttrs) {
