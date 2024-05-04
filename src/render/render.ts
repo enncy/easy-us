@@ -2,9 +2,10 @@ import { ModalElement } from '../elements';
 import { Script, ScriptConfigsProvider } from '../interfaces/script';
 import { $ui } from '../utils/ui';
 import { h } from '../utils/dom';
-import { MessageAttrs, ModalAttrs, ScriptIdentify } from '../interfaces/custom-window';
+import { MessageAttrs, modal, ModalAttrs, ScriptIdentify } from '../interfaces/custom-window';
 import { $win } from '../utils/start';
 import { cors } from '../interfaces';
+import { $elements, $gm } from '../utils';
 
 export const createRenderScript = (config?: {
 	name?: string;
@@ -89,7 +90,7 @@ export const createRenderScript = (config?: {
 			const closeBtn = h('button', { className: 'base-style-button' }, '隐藏窗口');
 			closeBtn.onclick = () => {
 				if (this.cfg.firstCloseAlert) {
-					$win?.modal('confirm', {
+					$modal.confirm({
 						content: $ui.notes([
 							'隐藏脚本页面后，快速点击页面三下（可以在悬浮窗设置中调整次数）即可重新显示脚本。如果三下无效，可以尝试删除脚本重新安装。',
 							'请确认是否关闭。（此后不再显示此弹窗）'
@@ -110,7 +111,7 @@ export const createRenderScript = (config?: {
 
 function _modal(type: ModalElement['type'], attrs: ModalAttrs) {
 	if (self === top) {
-		return $win?.modal(type, attrs);
+		return modal(type, attrs);
 	} else {
 		cors.emit('modal', [type, attrs], (args) => {
 			if (args) {

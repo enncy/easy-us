@@ -1,7 +1,7 @@
 import { cors, Project, Script, StoreProvider } from '.';
 import { ContainerElement, definedCustomElements, MessageElement, ModalElement } from '../elements';
 import { DropdownElement } from '../elements/dropdown';
-import { $, $ui, $gm, h, enableElementDraggable } from '../utils';
+import { $, $ui, $gm, h, enableElementDraggable, $elements } from '../utils';
 
 const minimizeSvg =
 	'<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 13H5v-2h14v2z"/></svg>';
@@ -181,7 +181,7 @@ export class CustomWindow {
 					attrs.onCancel = () => resolve('');
 					attrs.onConfirm = resolve;
 					attrs.onClose = resolve;
-					this.modal(type, attrs);
+					modal(type, attrs);
 				});
 			});
 		};
@@ -421,75 +421,6 @@ export class CustomWindow {
 	normal() {
 		this.setVisual('normal');
 	}
-
-	/**
-	 * 创建一个模态框代替原生的 alert, confirm, prompt
-	 */
-	modal(type: ModalElement['type'], attrs: ModalAttrs) {
-		const {
-			maskCloseable = true,
-			onConfirm,
-			onCancel,
-			onClose,
-			notification: notify,
-			notificationOptions,
-			duration,
-			..._attrs
-		} = attrs;
-
-		if (notify) {
-			$gm.notification(
-				typeof _attrs.content === 'string' ? _attrs.content : _attrs.content.textContent || '',
-				notificationOptions
-			);
-		}
-
-		const wrapper = h('div', { className: 'modal-wrapper' }, (wrapper) => {
-			const modal = h('modal-element', {
-				async onConfirm(val) {
-					const isClose: any = await onConfirm?.apply(modal, [val]);
-					if (isClose !== false) {
-						wrapper.remove();
-					}
-
-					return isClose;
-				},
-				onCancel() {
-					onCancel?.apply(modal);
-					wrapper.remove();
-				},
-				onClose(val) {
-					onClose?.apply(modal, [val]);
-					wrapper.remove();
-				},
-				type,
-				..._attrs
-			});
-			wrapper.append(modal);
-
-			modal.addEventListener('click', (e) => {
-				e.stopPropagation();
-			});
-			if (maskCloseable) {
-				/** 点击遮罩层关闭模态框 */
-				wrapper.addEventListener('click', () => {
-					onClose?.apply(modal);
-					wrapper.remove();
-				});
-			}
-		});
-
-		if (duration) {
-			setTimeout(() => {
-				wrapper.remove();
-			}, duration * 1000);
-		}
-
-		this.root.append(wrapper);
-
-		return wrapper;
-	}
-
 	/**
 	 * 消息推送
 	 */
@@ -558,4 +489,72 @@ function handleLowLevelBrowser() {
 			}
 		};
 	}
+}
+
+/**
+ * 创建一个模态框代替原生的 alert, confirm, prompt
+ */
+export function modal(type: ModalElement['type'], attrs: ModalAttrs) {
+	const {
+		maskCloseable = true,
+		onConfirm,
+		onCancel,
+		onClose,
+		notification: notify,
+		notificationOptions,
+		duration,
+		..._attrs
+	} = attrs;
+
+	if (notify) {
+		$gm.notification(
+			typeof _attrs.content === 'string' ? _attrs.content : _attrs.content.textContent || '',
+			notificationOptions
+		);
+	}
+
+	const wrapper = h('div', { className: 'modal-wrapper' }, (wrapper) => {
+		const modal = h('modal-element', {
+			async onConfirm(val) {
+				const isClose: any = await onConfirm?.apply(modal, [val]);
+				if (isClose !== false) {
+					wrapper.remove();
+				}
+
+				return isClose;
+			},
+			onCancel() {
+				onCancel?.apply(modal);
+				wrapper.remove();
+			},
+			onClose(val) {
+				onClose?.apply(modal, [val]);
+				wrapper.remove();
+			},
+			type,
+			..._attrs
+		});
+		wrapper.append(modal);
+
+		modal.addEventListener('click', (e) => {
+			e.stopPropagation();
+		});
+		if (maskCloseable) {
+			/** 点击遮罩层关闭模态框 */
+			wrapper.addEventListener('click', () => {
+				onClose?.apply(modal);
+				wrapper.remove();
+			});
+		}
+	});
+
+	if (duration) {
+		setTimeout(() => {
+			wrapper.remove();
+		}, duration * 1000);
+	}
+
+	$elements.root.append(wrapper);
+
+	return wrapper;
 }
