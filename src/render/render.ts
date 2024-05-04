@@ -76,7 +76,6 @@ export const createRenderScript = (config?: {
 				 */
 				setPosition: (x: number, y: number) => {
 					if ($win) {
-						$win.config.store.setVisual('minimize');
 						$win.config.store.setPosition(x, y);
 						$win.container.style.left = x + 'px';
 						$win.container.style.top = y + 'px';
