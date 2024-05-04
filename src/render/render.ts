@@ -63,12 +63,6 @@ export const createRenderScript = (config?: {
 		methods() {
 			return {
 				/**
-				 * 判断当前脚本是否置顶
-				 * 因为在 4.2.x 版本之后，所有面板都会进行显示，某些脚本可以根据这个方法是否已显示在页面中
-				 * @param script 脚本
-				 */
-				isPinned: (script) => $win?.isPinned(script),
-				/**
 				 * 将当前的脚本置顶
 				 * @param script 脚本
 				 */
@@ -80,7 +74,17 @@ export const createRenderScript = (config?: {
 				/**
 				 * 将窗口最小化，并移动至窗口边缘
 				 */
-				moveToEdge: () => $win?.moveToEdge(),
+				setPosition: (x: number, y: number) => {
+					if ($win) {
+						$win.config.store.setVisual('minimize');
+						$win.config.store.setPosition(x, y);
+						$win.container.style.left = x + 'px';
+						$win.container.style.top = y + 'px';
+					}
+				},
+				/**
+				 * 还原窗口
+				 */
 				normal: () => {
 					$win?.normal();
 				}

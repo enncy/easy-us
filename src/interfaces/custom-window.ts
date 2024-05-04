@@ -164,7 +164,6 @@ export class CustomWindow {
 				if (e.detail === Math.max(config.render.switchPoint, 3)) {
 					this.container.style.top = e.y + 'px';
 					this.container.style.left = e.x + 'px';
-
 					config.store.setPosition(e.x, e.y);
 					this.setVisual('normal');
 				}
@@ -381,16 +380,6 @@ export class CustomWindow {
 	}
 
 	/**
-	 * 判断当前脚本是否置顶
-	 * 因为在 4.2.x 版本之后，所有面板都会进行显示，某些脚本可以根据这个方法是否已显示在页面中
-	 * @param script 脚本
-	 */
-	async isPinned(script: ScriptIdentify) {
-		const currentPanelName = await this.config.store.getCurrentPanelName();
-		return isCurrentPanel(script.projectName, script, currentPanelName);
-	}
-
-	/**
 	 * 将当前的脚本置顶
 	 * @param script 脚本
 	 */
@@ -403,15 +392,6 @@ export class CustomWindow {
 			console.warn('[ERROR]', `${script.name} 无法置顶， projectName 与 namespace 都为 undefined`);
 		}
 	}
-
-	/**
-	 * 将窗口最小化，并移动至窗口边缘
-	 */
-	moveToEdge() {
-		this.setVisual('minimize');
-		this.config.store.setPosition(80, 60);
-	}
-
 	/**
 	 * 最小化窗口
 	 */
