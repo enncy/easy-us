@@ -494,11 +494,12 @@ function handleLowLevelBrowser() {
 
 /**
  * 创建一个模态框代替原生的 alert, confirm, prompt
+ * 如果 parent 为空，优先挂载到全局元素上，否则挂载到 document.body
  */
 export function modal(
 	type: ModalElement['type'],
 	attrs: ModalAttrs,
-	parent: HTMLElement | Document | ShadowRoot = document.body
+	parent: HTMLElement | Document | ShadowRoot = $elements.root || document.body
 ) {
 	const {
 		maskCloseable = true,
