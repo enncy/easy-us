@@ -39,26 +39,30 @@ export const $ui = {
 		}
 
 		const onMouseMove = (e: MouseEvent) => {
-			if ($elements.tooltipContainer.style.display !== 'none') {
+			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
 				$elements.tooltipContainer.style.top = e.y + 'px';
 				$elements.tooltipContainer.style.left = e.x + 'px';
 			}
 		};
 		const showTitle = (e: MouseEvent) => {
 			const dataTitle = target.getAttribute('data-title');
-			if (dataTitle) {
-				$elements.tooltipContainer.innerHTML = dataTitle.split('\n').join('<br>') || '';
-				$elements.tooltipContainer.style.top = e.y + 'px';
-				$elements.tooltipContainer.style.left = e.x + 'px';
-				$elements.tooltipContainer.style.display = 'block';
-			} else {
-				$elements.tooltipContainer.style.display = 'none';
+			if ($elements.tooltipContainer) {
+				if (dataTitle) {
+					$elements.tooltipContainer.innerHTML = dataTitle.split('\n').join('<br>') || '';
+					$elements.tooltipContainer.style.top = e.y + 'px';
+					$elements.tooltipContainer.style.left = e.x + 'px';
+					$elements.tooltipContainer.style.display = 'block';
+				} else {
+					$elements.tooltipContainer.style.display = 'none';
+				}
 			}
 
 			window.addEventListener('mousemove', onMouseMove);
 		};
 		const hideTitle = () => {
-			$elements.tooltipContainer.style.display = 'none';
+			if ($elements.tooltipContainer) {
+				$elements.tooltipContainer.style.display = 'none';
+			}
 			window.removeEventListener('mousemove', onMouseMove);
 		};
 		hideTitle();

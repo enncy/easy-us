@@ -109,9 +109,13 @@ export const createRenderScript = (config?: {
 		}
 	});
 
-function _modal(type: ModalElement['type'], attrs: ModalAttrs) {
+function _modal(
+	type: ModalElement['type'],
+	attrs: ModalAttrs,
+	parent: HTMLElement | Document | ShadowRoot = document.body
+) {
 	if (self === top) {
-		return modal(type, attrs);
+		return modal(type, attrs, parent);
 	} else {
 		cors.emit('modal', [type, attrs], (args) => {
 			if (args) {
@@ -128,10 +132,10 @@ function _modal(type: ModalElement['type'], attrs: ModalAttrs) {
  * 打开弹窗，如果调用时不在顶级窗口，则会通过跨域通信发送消息
  */
 export const $modal = {
-	confirm: (attrs: ModalAttrs) => _modal('confirm', attrs),
-	alert: (attrs: ModalAttrs) => _modal('alert', attrs),
-	prompt: (attrs: ModalAttrs) => _modal('prompt', attrs),
-	simple: (attrs: ModalAttrs) => _modal('simple', attrs)
+	confirm: (attrs: ModalAttrs, parent = $win?.root) => _modal('confirm', attrs, parent),
+	alert: (attrs: ModalAttrs, parent = $win?.root) => _modal('alert', attrs, parent),
+	prompt: (attrs: ModalAttrs, parent = $win?.root) => _modal('prompt', attrs, parent),
+	simple: (attrs: ModalAttrs, parent = $win?.root) => _modal('simple', attrs, parent)
 };
 
 function _message(type: 'info' | 'success' | 'warn' | 'error', attrs: MessageAttrs) {

@@ -2,6 +2,7 @@ import { cors, Project, Script, StoreProvider } from '.';
 import { ContainerElement, definedCustomElements, MessageElement, ModalElement } from '../elements';
 import { DropdownElement } from '../elements/dropdown';
 import { $, $ui, $gm, h, enableElementDraggable, $elements } from '../utils';
+import { $win } from '../utils/start';
 
 const minimizeSvg =
 	'<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 0 24 24" width="24"><path d="M0 0h24v24H0V0z" fill="none"/><path d="M19 13H5v-2h14v2z"/></svg>';
@@ -494,7 +495,11 @@ function handleLowLevelBrowser() {
 /**
  * 创建一个模态框代替原生的 alert, confirm, prompt
  */
-export function modal(type: ModalElement['type'], attrs: ModalAttrs) {
+export function modal(
+	type: ModalElement['type'],
+	attrs: ModalAttrs,
+	parent: HTMLElement | Document | ShadowRoot = document.body
+) {
 	const {
 		maskCloseable = true,
 		onConfirm,
@@ -554,7 +559,7 @@ export function modal(type: ModalElement['type'], attrs: ModalAttrs) {
 		}, duration * 1000);
 	}
 
-	$elements.root.append(wrapper);
+	parent.append(wrapper);
 
 	return wrapper;
 }

@@ -4,6 +4,8 @@ import { Project } from '../interfaces/project';
 import { createRenderScript } from '../render/render';
 import { $ } from './common';
 import { $const } from './const';
+import { h } from './dom';
+import { $elements } from './elements';
 import { $store } from './store';
 import debounce from 'lodash/debounce';
 
@@ -241,6 +243,11 @@ function mount(startConfig: StartConfig) {
 			win.changePanel(name);
 		});
 		win.mount(document.body);
+
+		// 挂载全局元素
+		$elements.tooltipContainer = h('div', { className: 'tooltip-container' });
+		$elements.root = win.root;
+		win.root.append($elements.tooltipContainer);
 
 		$win = win;
 	}
