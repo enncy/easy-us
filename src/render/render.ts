@@ -1,23 +1,20 @@
 import { ModalElement } from '../elements';
-import { Script, ScriptConfigsProvider } from '../interfaces/script';
+import { Script } from '../interfaces/script';
 import { $ui } from '../utils/ui';
 import { h } from '../utils/dom';
 import { MessageAttrs, modal, ModalAttrs, ScriptIdentify } from '../interfaces/custom-window';
 import { $win } from '../utils/start';
 import { cors } from '../interfaces';
-import { $elements, $gm } from '../utils';
 
 export const createRenderScript = (config?: {
 	name?: string;
-	matches?: (string | RegExp)[];
-	namespace?: string;
-	configs?: ScriptConfigsProvider<any>;
+	matches?: (string | RegExp)[] | [string, string | RegExp][];
 }) =>
 	new Script({
-		name: config?.name || '🖼️ 窗口设置',
+		name: config?.name || '窗口设置',
 		matches: config?.matches || [['所有', /.*/]],
-		namespace: config?.namespace || 'render.panel',
-		configs: config?.configs || {
+		namespace: 'render.panel',
+		configs: {
 			notes: {
 				defaultValue: $ui.notes([
 					[

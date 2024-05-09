@@ -1,7 +1,7 @@
 /* global */
+import { Script } from '../interfaces';
 import { CustomWindow } from '../interfaces/custom-window';
 import { Project } from '../interfaces/project';
-import { createRenderScript } from '../render/render';
 import { $ } from './common';
 import { $const } from './const';
 import { h } from './dom';
@@ -18,7 +18,13 @@ export let $win: CustomWindow | undefined;
 export interface StartConfig {
 	/** 项目列表 */
 	projects: Project[];
-	RenderScript: ReturnType<typeof createRenderScript>;
+	renderConfig?: {
+		renderScript: Script;
+		title: string;
+		styles: string[];
+		defaultPanelName: string;
+	};
+	onRender?: () => CustomWindow;
 	[x: string]: any;
 }
 
@@ -174,11 +180,16 @@ function mount(startConfig: StartConfig) {
 		return;
 	}
 	mounted = true;
+	if (startConfig === undefined || startConfig.renderConfig === undefined) {
+		console.warn('the script will not have ui because the renderConfig is not defined.');
+		return;
+	}
+
 	/** 移除上一次加载页面时遗留下来的 url 加载数据 */
 	$store.setTab($const.TAB_URLS, []);
 	if (self === top) {
-		const { projects, renderConfig, RenderScript } = startConfig;
-		if (typeof RenderScript === 'undefined') {
+		const { projects, renderConfig } = startConfig;
+		if (typeof renderConfig.renderScript === 'undefined') {
 			console.warn('the script will not have ui because the RenderScript is not defined.');
 			return;
 		}
@@ -186,6 +197,8 @@ function mount(startConfig: StartConfig) {
 		if (scripts.length <= 0) {
 			return;
 		}
+
+		const RenderScript = renderConfig.renderScript;
 
 		const win = new CustomWindow(startConfig.projects, $store, {
 			render: {
