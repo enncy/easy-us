@@ -260,7 +260,8 @@ function mount(startConfig: StartConfig) {
 		// 挂载全局元素
 		$elements.tooltipContainer = h('div', { className: 'tooltip-container' });
 		$elements.root = win.root;
-		win.root.append($elements.tooltipContainer);
+		// 挂载全局提示元素
+		win.container.append($elements.tooltipContainer);
 
 		$win = win;
 	}
