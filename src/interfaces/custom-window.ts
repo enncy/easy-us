@@ -479,7 +479,7 @@ function handleLowLevelBrowser() {
 export function modal(
 	type: ModalElement['type'],
 	attrs: ModalAttrs,
-	parent: HTMLElement | Document | ShadowRoot = $win?.root || $elements.root || document.body
+	parent: HTMLElement | Document | ShadowRoot = $win?.container || $elements.root || document.body
 ) {
 	const {
 		maskCloseable = true,
