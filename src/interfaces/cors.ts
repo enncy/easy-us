@@ -34,7 +34,7 @@ export class CorsEventEmitter {
 	 * @param args 事件参数
 	 * @param callback 事件回调，可以接收返回值
 	 */
-	emit(name: string, args: any[] = [], callback?: (returnValue: any, remote: boolean) => void): void {
+	emit(name: string, args: any[] = [], callback?: (returnValue: any) => void): void {
 		$store
 			.getTab($const.TAB_UID)
 			.then((uid: string) => {
@@ -46,17 +46,23 @@ export class CorsEventEmitter {
 				/** 模态框所需参数 */
 				$store.set(this.keyOfArguments(id), args);
 
-				const listenerId =
-					$store.addChangeListener(this.keyOfState(id), (pre, curr, remote) => {
-						// 移除此监听器
-						$store.removeChangeListener(listenerId);
-						// 执行回调
-						callback?.($store.get(this.keyOfReturn(id)), !!remote);
-						// 移除冗余的本地临时存储变量
-						$store.delete(this.keyOfState(id));
-						$store.delete(this.keyOfReturn(id));
-						$store.delete(this.keyOfArguments(id));
-					}) || 0;
+				/**
+				 * 由于部分脚本管理器API实现不同，脚本猫中 setValue 后立即监听变化会监听到上一个 set 0 的事件
+				 * 所以这里等待一段时间后再进行监听，避免监听到上一个 set 0 的事件
+				 */
+				setTimeout(() => {
+					const listenerId =
+						$store.addChangeListener(this.keyOfState(id), (pre, curr) => {
+							// 移除此监听器
+							$store.removeChangeListener(listenerId);
+							// 执行回调
+							callback?.($store.get(this.keyOfReturn(id)));
+							// 移除冗余的本地临时存储变量
+							$store.delete(this.keyOfState(id));
+							$store.delete(this.keyOfReturn(id));
+							$store.delete(this.keyOfArguments(id));
+						}) || 0;
+				}, 100);
 
 				/** 添加 id 到监听队列 */
 				$store.set(key, ($store.get(key) ? String($store.get(key)).split(',') : []).concat(id).join(','));
@@ -82,29 +88,27 @@ export class CorsEventEmitter {
 						resolve(originId);
 					} else {
 						const id =
-							$store.addChangeListener(key, async (pre, curr, remote) => {
-								if (remote) {
-									// 删除当前 key 也会导致触发监听。
-									if (curr === undefined) {
-										return;
-									}
+							$store.addChangeListener(key, async (pre, curr) => {
+								// 删除当前 key 也会导致触发监听。
+								if (curr === undefined) {
+									return;
+								}
 
-									const list = String(curr).split(',');
-									// 处理队列
-									const id = list.pop();
+								const list = String(curr).split(',');
+								// 处理队列
+								const id = list.pop();
 
-									if (id) {
-										// 设置返回参数
-										$store.set(this.keyOfReturn(id), await handler($store.get(this.keyOfArguments(id))));
+								if (id) {
+									// 设置返回参数
+									$store.set(this.keyOfReturn(id), await handler($store.get(this.keyOfArguments(id))));
 
-										// 更新队列
-										setTimeout(() => {
-											// 这里改变参数，可以触发另一端的监听
-											$store.set(this.keyOfState(id), 1);
-											// 完成监听，删除id
-											$store.set(key, list.join(','));
-										}, 100);
-									}
+									// 更新队列
+									setTimeout(() => {
+										// 这里改变参数，可以触发另一端的监听
+										$store.set(this.keyOfState(id), 1);
+										// 完成监听，删除id
+										$store.set(key, list.join(','));
+									}, 100);
 								}
 							}) || 0;
 						this.eventMap.set(key, id);
