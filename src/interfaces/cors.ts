@@ -131,14 +131,15 @@ export class CorsEventEmitter {
 	}
 
 	defineTopFunction<T extends (...args: any[]) => string | number | boolean | void>(
+		id: string,
 		func: T
 	): { (...args: Parameters<T>): Promise<ReturnType<T>> } {
 		if ($gm.isInGMContext() === false) {
 			return (() => {}) as any;
 		}
-		const random_event_name = '_random_register_.event.' + $.uuid();
+		const event_name = '_top_function_.' + id;
 		if (self === top) {
-			cors.on(random_event_name, (args) => {
+			cors.on(event_name, (args) => {
 				return func(...args);
 			});
 		}
@@ -146,7 +147,7 @@ export class CorsEventEmitter {
 		return async (...args) => {
 			const res = await new Promise<ReturnType<T>>((resolve, reject) => {
 				try {
-					cors.emit(random_event_name, args, (val) => {
+					cors.emit(event_name, args, (val) => {
 						resolve(val);
 					});
 				} catch (e) {
@@ -166,7 +167,7 @@ if (typeof GM_listValues !== 'undefined' && self === top) {
 			if (/_temp_.event.[0-9a-z]{32}.(state|return|arguments)/.test(key)) {
 				$store.delete(key);
 			}
-			if (/_random_register_.event.[0-9a-z]{32}/.test(key)) {
+			if (/_top_function_.*/.test(key)) {
 				$store.delete(key);
 			}
 			if (/[0-9a-z]{32}.cors.events/.test(key)) {
