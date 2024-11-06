@@ -1,3 +1,4 @@
+import { $gm } from '../utils';
 import { $ } from '../utils/common';
 import { $const } from '../utils/const';
 import { $store } from '../utils/store';
@@ -128,6 +129,33 @@ export class CorsEventEmitter {
 			$store.removeChangeListener(originId);
 		}
 	}
+
+	defineTopFunction<T extends (...args: any[]) => string | number | boolean | void>(
+		func: T
+	): { (...args: Parameters<T>): Promise<ReturnType<T>> } {
+		if ($gm.isInGMContext() === false) {
+			return (() => {}) as any;
+		}
+		const random_event_name = '_random_register_.event.' + $.uuid();
+		if (self === top) {
+			cors.on(random_event_name, (args) => {
+				return func(...args);
+			});
+		}
+
+		return async (...args) => {
+			const res = await new Promise<ReturnType<T>>((resolve, reject) => {
+				try {
+					cors.emit(random_event_name, args, (val) => {
+						resolve(val);
+					});
+				} catch (e) {
+					reject(e);
+				}
+			});
+			return res;
+		};
+	}
 }
 
 if (typeof GM_listValues !== 'undefined' && self === top) {
@@ -138,7 +166,9 @@ if (typeof GM_listValues !== 'undefined' && self === top) {
 			if (/_temp_.event.[0-9a-z]{32}.(state|return|arguments)/.test(key)) {
 				$store.delete(key);
 			}
-
+			if (/_random_register_.event.[0-9a-z]{32}/.test(key)) {
+				$store.delete(key);
+			}
 			if (/[0-9a-z]{32}.cors.events/.test(key)) {
 				$store.delete(key);
 			}
