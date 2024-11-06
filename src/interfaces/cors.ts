@@ -89,27 +89,29 @@ export class CorsEventEmitter {
 						resolve(originId);
 					} else {
 						const id =
-							$store.addChangeListener(key, async (pre, curr) => {
-								// 删除当前 key 也会导致触发监听。
-								if (curr === undefined) {
-									return;
-								}
+							$store.addChangeListener(key, async (pre, curr, remote) => {
+								if (remote) {
+									// 删除当前 key 也会导致触发监听。
+									if (curr === undefined) {
+										return;
+									}
 
-								const list = String(curr).split(',');
-								// 处理队列
-								const id = list.pop();
+									const list = String(curr).split(',');
+									// 处理队列
+									const id = list.pop();
 
-								if (id) {
-									// 设置返回参数
-									$store.set(this.keyOfReturn(id), await handler($store.get(this.keyOfArguments(id))));
+									if (id) {
+										// 设置返回参数
+										$store.set(this.keyOfReturn(id), await handler($store.get(this.keyOfArguments(id))));
 
-									// 更新队列
-									setTimeout(() => {
-										// 这里改变参数，可以触发另一端的监听
-										$store.set(this.keyOfState(id), 1);
-										// 完成监听，删除id
-										$store.set(key, list.join(','));
-									}, 100);
+										// 更新队列
+										setTimeout(() => {
+											// 这里改变参数，可以触发另一端的监听
+											$store.set(this.keyOfState(id), 1);
+											// 完成监听，删除id
+											$store.set(key, list.join(','));
+										}, 100);
+									}
 								}
 							}) || 0;
 						this.eventMap.set(key, id);

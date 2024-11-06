@@ -191,7 +191,6 @@ export class CustomWindow {
 			cors.on('message', async (args) => {
 				const [type, attrs] = args || [];
 				console.log('message', type, attrs);
-
 				this.message(type, attrs);
 			});
 		};
