@@ -63,10 +63,10 @@ export class CorsEventEmitter {
 							$store.delete(this.keyOfReturn(id));
 							$store.delete(this.keyOfArguments(id));
 						}) || 0;
-				}, 100);
 
-				/** 添加 id 到监听队列 */
-				$store.set(key, ($store.get(key) ? String($store.get(key)).split(',') : []).concat(id).join(','));
+					/** 添加 id 到监听队列 */
+					$store.set(key, ($store.get(key) ? String($store.get(key)).split(',') : []).concat(id).join(','));
+				}, 100);
 			})
 			.catch(console.error);
 	}
