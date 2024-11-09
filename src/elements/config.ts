@@ -67,7 +67,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 						if (item[2]) {
 							option.title = item[2];
 						}
-						if (item[0] === value) {
+						if (String(item[0]) === String(value)) {
 							option.selected = true;
 							option.toggleAttribute('selected');
 						}
@@ -78,7 +78,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 						if (item.title) {
 							option.title = item.title;
 						}
-						if (item.value === value) {
+						if (String(item.value) === String(value)) {
 							option.selected = true;
 							option.toggleAttribute('selected');
 						}
