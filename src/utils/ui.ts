@@ -147,7 +147,8 @@ export const $ui = {
 						},
 						defaultValue: config.defaultValue,
 						options: config.options,
-						show_if: config.show_if
+						showIf: config.showIf,
+						elementClassName: config.elementClassName
 					});
 					element.store = store;
 					element.label.textContent = config.label;

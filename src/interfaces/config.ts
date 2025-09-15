@@ -15,5 +15,6 @@ export interface Config<T extends keyof ConfigTagMap = keyof ConfigTagMap, V = a
 	 * 额外的数据，可以由程序自定义并解析
 	 */
 	extra?: any;
-	show_if?: string;
+	showIf?: string;
+	elementClassName?: string;
 }

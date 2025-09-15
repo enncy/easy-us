@@ -35,7 +35,8 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 	/**
 	 * 控制元素是否可见，提供从 store 中的值来决定
 	 */
-	show_if?: string;
+	showIf?: string;
+	elementClassName?: string;
 	_onload?: (this: ConfigTagMap[T], el: this) => void;
 
 	constructor(store: StoreProvider) {
@@ -147,6 +148,9 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		this.wrapper.replaceChildren(this.provider);
 		this.append(this.label, this.wrapper);
+		if (this.elementClassName) {
+			this.className = this.elementClassName;
+		}
 
 		// 合并元素属性
 		for (const key in this.attrs) {
@@ -170,12 +174,14 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 		$ui.tooltip(this.provider);
 
 		// 判断是否可见
-		if (this.show_if) {
-			const show_if = this.store.get(this.show_if, false) || false;
-			if (!show_if) {
+		if (this.showIf) {
+			const showIf = this.store.get(this.showIf, false) || false;
+			if (showIf) {
+				this.style.display = '';
+			} else {
 				this.style.display = 'none';
 			}
-			this.store.addChangeListener(this.show_if, (pre, curr, remote) => {
+			this.store.addChangeListener(this.showIf, (pre, curr, remote) => {
 				if (this.isConnected) {
 					if (curr) {
 						this.style.display = '';
