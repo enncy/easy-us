@@ -145,23 +145,6 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 			}
 		}
 
-		// 判断是否可见
-		if (this.show_if) {
-			const show_if = this.store.get(this.show_if, false) || false;
-			if (!show_if) {
-				this.style.display = 'none';
-			}
-			this.store.addChangeListener(this.show_if, (pre, curr, remote) => {
-				if (this.isConnected) {
-					if (curr) {
-						this.style.display = '';
-					} else {
-						this.style.display = 'none';
-					}
-				}
-			});
-		}
-
 		this.wrapper.replaceChildren(this.provider);
 		this.append(this.label, this.wrapper);
 
@@ -185,6 +168,23 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		// 处理提示
 		$ui.tooltip(this.provider);
+
+		// 判断是否可见
+		if (this.show_if) {
+			const show_if = this.store.get(this.show_if, false) || false;
+			if (!show_if) {
+				this.style.display = 'none';
+			}
+			this.store.addChangeListener(this.show_if, (pre, curr, remote) => {
+				if (this.isConnected) {
+					if (curr) {
+						this.style.display = '';
+					} else {
+						this.style.display = 'none';
+					}
+				}
+			});
+		}
 
 		/**
 		 * 触发输入组件的加载回调
