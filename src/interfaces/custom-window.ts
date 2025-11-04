@@ -449,6 +449,9 @@ export class CustomWindow {
 		const name = await $store.getTab($const.TAB_CURRENT_PANEL_NAME);
 		if (config.scriptPanelLink) {
 			if (isCurrentPanel(config.scriptPanelLink.projectName, config.scriptPanelLink, name)) {
+				// 排除其他
+				this.extraMenuBar.querySelectorAll('.script-panel-link').forEach((el) => el.classList.remove('active'));
+
 				btn.classList.add('active');
 			}
 		}
