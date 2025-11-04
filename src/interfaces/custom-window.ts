@@ -438,10 +438,9 @@ export class CustomWindow {
 				(config.scriptPanelLink.projectName ? config.scriptPanelLink.projectName + ' -> ' : '') +
 				config.scriptPanelLink.name;
 			btn.title = '快捷跳转：' + full_name;
-			btn.setAttribute('data-title', full_name);
 			btn.classList.add('script-panel-link');
 		}
-		this.extraMenuBar.append(btn);
+		this.extraMenuBar.append($ui.tooltip(btn));
 		return btn;
 	}
 
