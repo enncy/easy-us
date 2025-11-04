@@ -1,7 +1,7 @@
 import { cors, Project, Script, StoreProvider } from '.';
 import { ContainerElement, definedCustomElements, MessageElement, ModalElement } from '../elements';
 import { DropdownElement } from '../elements/dropdown';
-import { $, $ui, $gm, h, enableElementDraggable, $elements } from '../utils';
+import { $, $ui, $gm, h, enableElementDraggable, $elements, $store, $const } from '../utils';
 import { $win } from '../utils/start';
 
 const minimizeSvg =
@@ -438,9 +438,22 @@ export class CustomWindow {
 				(config.scriptPanelLink.projectName ? config.scriptPanelLink.projectName + ' -> ' : '') +
 				config.scriptPanelLink.name;
 			btn.title = '快捷跳转：' + full_name;
+			btn.setAttribute(
+				'data-name',
+				(config.scriptPanelLink.projectName + '-' + config.scriptPanelLink.name).replace(/\s/g, '_')
+			);
 			btn.classList.add('script-panel-link');
 		}
 		this.extraMenuBar.append($ui.tooltip(btn));
+
+		$store.getTab($const.TAB_CURRENT_PANEL_NAME).then((name) => {
+			if (config.scriptPanelLink) {
+				if (isCurrentPanel(config.scriptPanelLink.projectName, config.scriptPanelLink, name)) {
+					btn.classList.add('active');
+				}
+			}
+		});
+
 		return btn;
 	}
 

@@ -251,6 +251,8 @@ function mount(startConfig: StartConfig) {
 
 		$store.addTabChangeListener($const.TAB_CURRENT_PANEL_NAME, (name) => {
 			win.changePanel(name);
+			// 同步菜单状态
+			updateMenusState(win, name);
 		});
 		win.mount(document.body);
 
@@ -262,4 +264,9 @@ function mount(startConfig: StartConfig) {
 
 		$win = win;
 	}
+}
+
+function updateMenusState(win: CustomWindow, name: string) {
+	win.root.querySelectorAll('.extra-menu-bar .script-panel-link').forEach((el) => el.classList.remove('active'));
+	win.root.querySelector('.extra-menu-bar [data-name="' + name.replace(/\s/g, '_') + '"]')?.classList.add('active');
 }
