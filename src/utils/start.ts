@@ -241,9 +241,6 @@ function mount(startConfig: StartConfig) {
 		RenderScript.onConfigChange('fontsize', (fs) => {
 			win.setFontSize(fs);
 		});
-		RenderScript.onConfigChange('visual', (v) => {
-			win.setVisual(v);
-		});
 
 		$store.addTabChangeListener(
 			$const.TAB_URLS,
