@@ -179,7 +179,7 @@ export class GMStoreProvider implements StoreProvider {
 
 	addChangeListener(key: string, listener: (curr: any, pre: any, remote?: boolean) => void): number {
 		return GM_addValueChangeListener(key, (_, pre, curr, remote) => {
-			listener(pre, curr, remote);
+			listener(curr, pre, remote);
 		});
 	}
 
