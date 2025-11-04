@@ -285,7 +285,7 @@ export class CustomWindow {
 					dropdown.classList.add('active');
 				}
 
-				dropdown.triggerElement = h('div', { className: 'dropdown-trigger-element ' }, project.name);
+				dropdown.triggerElement = h('div', { className: 'dropdown-trigger-element' }, project.name);
 				dropdown.triggerElement.style.padding = '0px 8px';
 				dropdown.content.append(...options);
 
@@ -438,6 +438,7 @@ export class CustomWindow {
 				(config.scriptPanelLink.projectName ? config.scriptPanelLink.projectName + ' -> ' : '') +
 				config.scriptPanelLink.name;
 			btn.title = '快捷跳转：' + full_name;
+			btn.setAttribute('data-title', full_name);
 			btn.classList.add('script-panel-link');
 		}
 		this.extraMenuBar.append(btn);

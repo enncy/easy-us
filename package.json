@@ -12,7 +12,7 @@
 	"scripts": {
 		"build": "tsc && vite build",
 		"dev": "vite build -w",
-		"pub": "npm run build && git add . &&  git commit -m 'release' && npm version patch && npm publish && git push origin main --tags",
+		"pub": "npm run build && npm version patch && npm publish && git push origin main --tags",
 		"init-commitizen": "commitizen init cz-conventional-changelog --save --save-exact"
 	},
 	"repository": {
