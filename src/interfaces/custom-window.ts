@@ -418,7 +418,7 @@ export class CustomWindow {
 	 * @param label	名称
 	 * @param config 设置
 	 */
-	menu(label: string, config: { scriptPanelLink?: ScriptIdentify }) {
+	async menu(label: string, config: { scriptPanelLink?: ScriptIdentify }) {
 		this.extraMenuBar.style.display = 'flex';
 
 		const btn = h('button', label);
@@ -446,14 +446,12 @@ export class CustomWindow {
 		}
 		this.extraMenuBar.append($ui.tooltip(btn));
 
-		$store.getTab($const.TAB_CURRENT_PANEL_NAME).then((name) => {
-			if (config.scriptPanelLink) {
-				if (isCurrentPanel(config.scriptPanelLink.projectName, config.scriptPanelLink, name)) {
-					btn.classList.add('active');
-				}
+		const name = await $store.getTab($const.TAB_CURRENT_PANEL_NAME);
+		if (config.scriptPanelLink) {
+			if (isCurrentPanel(config.scriptPanelLink.projectName, config.scriptPanelLink, name)) {
+				btn.classList.add('active');
 			}
-		});
-
+		}
 		return btn;
 	}
 
