@@ -165,7 +165,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		// 处理跨域
 		if (this.sync) {
-			this.store.addChangeListener(this.key, (curr, pre, remote) => {
+			this.store.addChangeListener(this.key, (curr) => {
 				this.provider.value = curr;
 			});
 		}
@@ -181,7 +181,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 			} else {
 				this.style.display = 'none';
 			}
-			this.store.addChangeListener(this.showIf, (curr, pre, remote) => {
+			this.store.addChangeListener(this.showIf, (curr) => {
 				if (this.isConnected) {
 					if (curr) {
 						this.style.display = '';

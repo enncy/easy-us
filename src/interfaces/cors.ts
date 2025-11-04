@@ -53,7 +53,7 @@ export class CorsEventEmitter {
 				 */
 				setTimeout(() => {
 					const listenerId =
-						$store.addChangeListener(this.keyOfState(id), (pre, curr) => {
+						$store.addChangeListener(this.keyOfState(id), () => {
 							// 移除此监听器
 							$store.removeChangeListener(listenerId);
 							// 执行回调
@@ -89,7 +89,7 @@ export class CorsEventEmitter {
 						resolve(originId);
 					} else {
 						const id =
-							$store.addChangeListener(key, async (pre, curr, remote) => {
+							$store.addChangeListener(key, async (curr, pre, remote) => {
 								if (remote) {
 									// 删除当前 key 也会导致触发监听。
 									if (curr === undefined) {

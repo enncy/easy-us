@@ -182,7 +182,7 @@ export class Script<
 		handler: (curr: C[K]['defaultValue'], pre: C[K]['defaultValue'], remote: boolean) => any
 	) {
 		const _key = $.namespaceKey(this.namespace, key.toString());
-		return $store.addChangeListener(_key, (pre, curr, remote) => {
+		return $store.addChangeListener(_key, (curr, pre, remote) => {
 			handler(curr, pre, !!remote);
 		});
 	}
