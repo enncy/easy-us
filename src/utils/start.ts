@@ -241,15 +241,22 @@ async function mount(startConfig: StartConfig) {
 
 		$store.addTabChangeListener(
 			$const.TAB_URLS,
-			debounce((urls) => {
-				win.changeRenderURLs(urls);
+			debounce((curr: string[], pre: string[]) => {
+				if (JSON.stringify(curr) === JSON.stringify(pre)) {
+					return;
+				}
+				win.changeRenderURLs(curr);
 			}, 2000)
 		);
 
-		$store.addTabChangeListener($const.TAB_CURRENT_PANEL_NAME, (name) => {
-			win.changePanel(name);
+		$store.addTabChangeListener($const.TAB_CURRENT_PANEL_NAME, (curr, pre) => {
+			if (curr === pre) {
+				return;
+			}
+
+			win.changePanel(curr);
 			// 同步菜单状态
-			updateMenusState(win, name);
+			updateMenusState(win, curr);
 		});
 		win.mount(document.body);
 

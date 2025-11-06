@@ -44,6 +44,7 @@ export interface StoreProvider {
 	removeChangeListener(listener: number | void | EventListener): void;
 	/**
 	 * 原理：在使用 OCS.start 后，每个页面会自动分配一个 uid，存储监听器的Key到油猴的本地存储中，通过改变这个的值，可以触发监听
+	 * 脚本猫和油猴实现有区别，脚本猫相同的值设置后同样会触发 change，油猴不会，截止1.1.2 版本
 	 */
 	addTabChangeListener(key: string, listener: (curr: any, pre: any) => void): void | Promise<number>;
 	removeTabChangeListener(key: string, listener: number | EventListener): void;
