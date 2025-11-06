@@ -33,12 +33,6 @@ export interface StartConfig {
  * @param startConfig 启动配置
  */
 export async function start(startConfig: StartConfig) {
-	// 添加当前标签唯一id
-	const uid = await $store.getTab($const.TAB_UID);
-	if (uid === undefined) {
-		await $store.setTab($const.TAB_UID, $.uuid());
-	}
-
 	/** 为对象添加响应式特性，在设置值的时候同步到本地存储中 */
 	startConfig.projects = startConfig.projects.map((p) => {
 		for (const key in p.scripts) {
@@ -57,6 +51,19 @@ export async function start(startConfig: StartConfig) {
 		script.emit('start', startConfig);
 		script.onstart?.(startConfig);
 	});
+
+	// 添加当前标签唯一id
+	const uid = await $store.getTab($const.TAB_UID);
+	if (uid === undefined) {
+		await $store.setTab($const.TAB_UID, $.uuid());
+	}
+
+	/**
+	 * 每个脚本加载之后，统计每个脚本当前所运行的页面链接，链接不会重复
+	 * 初始化页面的脚本可以根据此链接列表，进行脚本页面的生成
+	 */
+	const urls = await $store.getTab($const.TAB_URLS);
+	await $store.setTab($const.TAB_URLS, Array.from(new Set(urls || [])).concat(location.href));
 
 	/** 防止 onactive 执行两次 */
 	let active = false;
@@ -99,14 +106,6 @@ export async function start(startConfig: StartConfig) {
 			scripts.forEach((script) => {
 				script.emit('complete');
 				script.oncomplete?.(startConfig);
-			});
-
-			/**
-			 * 每个脚本加载之后，统计每个脚本当前所运行的页面链接，链接不会重复
-			 * 初始化页面的脚本可以根据此链接列表，进行脚本页面的生成
-			 */
-			$store.getTab($const.TAB_URLS).then((urls) => {
-				$store.setTab($const.TAB_URLS, Array.from(new Set(urls || [])).concat(location.href));
 			});
 		}
 	});
@@ -175,7 +174,7 @@ export function addFunctionEventListener(obj: any, type: string) {
 	};
 }
 
-function mount(startConfig: StartConfig) {
+async function mount(startConfig: StartConfig) {
 	if (mounted === true) {
 		return;
 	}
@@ -186,7 +185,7 @@ function mount(startConfig: StartConfig) {
 	}
 
 	/** 移除上一次加载页面时遗留下来的 url 加载数据 */
-	$store.setTab($const.TAB_URLS, []);
+	await $store.setTab($const.TAB_URLS, []);
 	if (self === top) {
 		const { projects, renderConfig } = startConfig;
 		if (typeof renderConfig.renderScript === 'undefined') {
