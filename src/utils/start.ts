@@ -63,7 +63,7 @@ export async function start(startConfig: StartConfig) {
 	 * 初始化页面的脚本可以根据此链接列表，进行脚本页面的生成
 	 */
 	const urls = await $store.getTab($const.TAB_URLS);
-	await $store.setTab($const.TAB_URLS, Array.from(new Set(urls || [])).concat(location.href));
+	await $store.setTab($const.TAB_URLS, Array.from(new Set((urls || []).concat(location.href))));
 
 	/** 防止 onactive 执行两次 */
 	let active = false;
@@ -184,8 +184,6 @@ async function mount(startConfig: StartConfig) {
 		return;
 	}
 
-	/** 移除上一次加载页面时遗留下来的 url 加载数据 */
-	await $store.setTab($const.TAB_URLS, []);
 	if (self === top) {
 		const { projects, renderConfig } = startConfig;
 		if (typeof renderConfig.renderScript === 'undefined') {
