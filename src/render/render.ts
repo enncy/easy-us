@@ -2,7 +2,7 @@ import { ModalElement } from '../elements';
 import { Script } from '../interfaces/script';
 import { $ui } from '../utils/ui';
 import { h } from '../utils/dom';
-import { MessageAttrs, modal, ModalAttrs, ScriptIdentify } from '../interfaces/custom-window';
+import { MessageAttrs, modal, ModalAttrs, ScriptIdentify, VisualType } from '../interfaces/custom-window';
 import { $win } from '../utils/start';
 import { cors } from '../interfaces';
 
@@ -31,10 +31,10 @@ export const createRenderScript = (config?: {
 
 			/**
 			 * - minimize: 最小化
-			 * - close: 关闭
+			 * - hidden: 隐藏
 			 * - normal: 正常
 			 */
-			visual: { defaultValue: 'normal' as 'minimize' | 'normal' | 'close' },
+			visual: { defaultValue: 'normal' as VisualType },
 			// 首次关闭时警告
 			firstCloseAlert: {
 				defaultValue: true
@@ -96,12 +96,12 @@ export const createRenderScript = (config?: {
 							'请确认是否关闭。（此后不再显示此弹窗）'
 						]),
 						onConfirm: () => {
-							this.cfg.visual = 'close';
+							$win?.hidden();
 							this.cfg.firstCloseAlert = false;
 						}
 					});
 				} else {
-					this.cfg.visual = 'close';
+					$win?.hidden();
 				}
 			};
 

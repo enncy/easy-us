@@ -50,7 +50,7 @@ export type MessageAttrs = string | Pick<MessageElement, 'duration' | 'onClose' 
  */
 export type ScriptIdentify = { namespace?: string; projectName?: string; name?: string } | Script;
 
-export type VisualType = 'normal' | 'minimize' | 'close';
+export type VisualType = 'normal' | 'minimize' | 'hidden';
 
 export type CustomWindowRenderConfig = {
 	render: {
@@ -203,7 +203,7 @@ export class CustomWindow {
 					e.stopPropagation();
 					e.preventDefault();
 
-					this.setVisual(config.store.getVisual() === 'close' ? 'normal' : 'close');
+					this.setVisual(config.store.getVisual() === 'hidden' ? 'normal' : 'hidden');
 				}
 			},
 			{ capture: true }
@@ -358,8 +358,8 @@ export class CustomWindow {
 			this.container.classList.add('minimize');
 		}
 		// 关闭
-		else if (value === 'close') {
-			this.container.classList.add('close');
+		else if (value === 'hidden') {
+			this.container.classList.add('hidden');
 		}
 		// 展开
 		else {
@@ -401,6 +401,11 @@ export class CustomWindow {
 	normal() {
 		this.setVisual('normal');
 	}
+
+	hidden() {
+		this.setVisual('hidden');
+	}
+
 	/**
 	 * 消息推送
 	 */
