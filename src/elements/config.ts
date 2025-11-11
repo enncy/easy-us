@@ -87,7 +87,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 							option.selected = true;
 							option.toggleAttribute('selected');
 						}
-						this.provider.add(option);
+						this.provider.add($ui.tooltip(option));
 					}
 				}
 				this.provider.onchange = () => {
