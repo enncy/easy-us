@@ -65,7 +65,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 				// 创建选项
 				for (const item of this.options || []) {
-					const option = h('option');
+					const option = $ui.tooltip(h('option'));
 					if (Array.isArray(item)) {
 						option.value = item[0];
 						option.textContent = item[1] ?? item[0];
@@ -87,7 +87,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 							option.selected = true;
 							option.toggleAttribute('selected');
 						}
-						this.provider.add($ui.tooltip(option));
+						this.provider.add(option);
 					}
 				}
 				this.provider.onchange = () => {
