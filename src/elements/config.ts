@@ -35,7 +35,7 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 	/**
 	 * 控制元素是否可见，提供从 store 中的值来决定
 	 */
-	showIf?: string;
+	showIf?: string | [string, { (curr: any, pre: any, store: StoreProvider): boolean }];
 	elementClassName?: string;
 	_onload?: (this: ConfigTagMap[T], el: this) => void;
 
@@ -175,21 +175,43 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		// 判断是否可见
 		if (this.showIf) {
-			const showIf = this.store.get(this.showIf, false) || false;
-			if (showIf) {
+			const show_if = Array.isArray(this.showIf)
+				? this.store.get(this.showIf[0], false) || false
+				: this.store.get(this.showIf, false) || false;
+			if (show_if) {
 				this.style.display = '';
 			} else {
 				this.style.display = 'none';
 			}
-			this.store.addChangeListener(this.showIf, (curr) => {
-				if (this.isConnected) {
-					if (curr) {
-						this.style.display = '';
-					} else {
-						this.style.display = 'none';
-					}
+
+			if (Array.isArray(this.showIf)) {
+				if (typeof this.showIf[1] !== 'function') {
+					throw new Error('EUS Config.showIf second element must be a function');
 				}
-			});
+				this.store.addChangeListener(this.showIf[0], (curr, pre) => {
+					if (this.isConnected) {
+						if (this.showIf && Array.isArray(this.showIf)) {
+							const res = this.showIf[1].call(null, curr, pre, this.store);
+							if (res) {
+								this.style.display = '';
+							} else {
+								this.style.display = 'none';
+							}
+						}
+					}
+				});
+			} else {
+				this.store.addChangeListener(this.showIf, (curr) => {
+					if (this.isConnected) {
+						const res = Boolean(curr);
+						if (res) {
+							this.style.display = '';
+						} else {
+							this.style.display = 'none';
+						}
+					}
+				});
+			}
 		}
 
 		/**
