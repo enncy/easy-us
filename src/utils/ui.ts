@@ -134,7 +134,7 @@ export const $ui = {
 		const elements: { [K in keyof T]: ConfigElement<T[K]['tag']> } = Object.create({});
 		for (const key in configs) {
 			if (Object.prototype.hasOwnProperty.call(configs, key)) {
-				const config = configs[key];
+				const config: Record<any, any> = configs[key];
 				if (config.label !== undefined) {
 					const element = h('config-element', {
 						key: $.namespaceKey(namespace, key),
@@ -148,7 +148,9 @@ export const $ui = {
 						defaultValue: config.defaultValue,
 						options: config.options,
 						showIf: config.showIf,
-						elementClassName: config.elementClassName
+						elementClassName: config.elementClassName,
+						labelClassName: config.labelClassName,
+						providerClassName: config.providerClassName
 					});
 					element.store = store;
 					element.label.textContent = config.label;
