@@ -175,9 +175,17 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		// 判断是否可见
 		if (this.showIf) {
-			const show_if = Array.isArray(this.showIf)
-				? this.store.get(this.showIf[0], false) || false
-				: this.store.get(this.showIf, false) || false;
+			let show_if = false;
+			if (Array.isArray(this.showIf)) {
+				if (typeof this.showIf[0] !== 'string') {
+					throw new Error('EUS Config.showIf first element must be a string');
+				}
+				const val = this.store.get(this.showIf[0], false) || false;
+				const res = this.showIf[1].call(null, val, val, this.store);
+				show_if = Boolean(res);
+			} else {
+				show_if = this.store.get(this.showIf, false) || false;
+			}
 			if (show_if) {
 				this.style.display = '';
 			} else {
