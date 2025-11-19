@@ -37,6 +37,9 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 	 */
 	showIf?: string | [string, { (curr: any, pre: any, store: StoreProvider): boolean }];
 	elementClassName?: string;
+	labelClassName?: string;
+	providerClassName?: string;
+
 	_onload?: (this: ConfigTagMap[T], el: this) => void;
 
 	constructor(store: StoreProvider) {
@@ -146,10 +149,19 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 			}
 		}
 
+		this.provider.setAttribute('id', this.key);
+		this.label.setAttribute('for', this.key);
+
 		this.wrapper.replaceChildren(this.provider);
 		this.append(this.label, this.wrapper);
 		if (this.elementClassName) {
 			this.className = this.elementClassName;
+		}
+		if (this.labelClassName) {
+			this.label.className = this.labelClassName;
+		}
+		if (this.providerClassName) {
+			this.provider.className = this.providerClassName;
 		}
 
 		// 合并元素属性

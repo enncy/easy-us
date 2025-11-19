@@ -2,7 +2,12 @@ import { ConfigElement } from '../elements/config';
 import { ConfigTagMap } from '../elements/configs/interface';
 
 export interface Config<T extends keyof ConfigTagMap = keyof ConfigTagMap, V = any>
-	extends Partial<Pick<ConfigElement<T>, 'tag' | 'attrs' | 'options' | 'showIf'>> {
+	extends Partial<
+		Pick<
+			ConfigElement<T>,
+			'tag' | 'attrs' | 'options' | 'showIf' | 'elementClassName' | 'labelClassName' | 'providerClassName'
+		>
+	> {
 	defaultValue: V;
 	label?: string;
 	/** 将本地修改后的值同步到元素中 */
@@ -15,5 +20,4 @@ export interface Config<T extends keyof ConfigTagMap = keyof ConfigTagMap, V = a
 	 * 额外的数据，可以由程序自定义并解析
 	 */
 	extra?: any;
-	elementClassName?: string;
 }
