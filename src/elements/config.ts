@@ -151,18 +151,18 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 
 		this.provider.setAttribute('id', this.key);
 		this.label.setAttribute('for', this.key);
-
-		this.wrapper.replaceChildren(this.provider);
-		this.append(this.label, this.wrapper);
-		if (this.elementClassName) {
-			this.className = this.elementClassName;
-		}
 		if (this.labelClassName) {
 			this.label.className = this.labelClassName;
 		}
 		if (this.providerClassName) {
 			this.provider.className = this.providerClassName;
 		}
+		if (this.elementClassName) {
+			this.className = this.elementClassName;
+		}
+
+		this.wrapper.replaceChildren(this.provider);
+		this.append(this.label, this.wrapper);
 
 		// 合并元素属性
 		for (const key in this.attrs) {
