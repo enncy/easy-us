@@ -51,13 +51,19 @@ export const $ui = {
 				$elements.tooltipContainer.style.left = touch.clientX + 'px';
 			}
 		};
-		const showTitle = (e: MouseEvent) => {
+		const showTitle = (e: MouseEvent | TouchEvent) => {
 			const dataTitle = target.getAttribute('data-title');
 			if ($elements.tooltipContainer) {
 				if (dataTitle) {
 					$elements.tooltipContainer.innerHTML = dataTitle.split('\n').join('<br>') || '';
-					$elements.tooltipContainer.style.top = e.y + 'px';
-					$elements.tooltipContainer.style.left = e.x + 'px';
+					if (e instanceof MouseEvent) {
+						$elements.tooltipContainer.style.top = e.y + 'px';
+						$elements.tooltipContainer.style.left = e.x + 'px';
+					} else if (e instanceof TouchEvent) {
+						const touch = e.touches[0];
+						$elements.tooltipContainer.style.top = touch.clientY + 'px';
+						$elements.tooltipContainer.style.left = touch.clientX + 'px';
+					}
 					$elements.tooltipContainer.style.display = 'block';
 				} else {
 					$elements.tooltipContainer.style.display = 'none';
