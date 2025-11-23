@@ -1,7 +1,17 @@
 import { cors, Project, Script, StoreProvider } from '.';
 import { ContainerElement, definedCustomElements, MessageElement, ModalElement } from '../elements';
 import { DropdownElement } from '../elements/dropdown';
-import { $, $ui, $gm, h, enableElementDraggable, $elements, $store, $const } from '../utils';
+import {
+	$,
+	$ui,
+	$gm,
+	h,
+	enableElementDraggable,
+	$elements,
+	$store,
+	$const,
+	enableElementTouchDraggable
+} from '../utils';
 import { $win } from '../utils/start';
 
 const minimizeSvg =
@@ -155,6 +165,7 @@ export class CustomWindow {
 			};
 
 			enableElementDraggable(this.container.header, this.container, positionHandler);
+			enableElementTouchDraggable(this.container.header, this.container, positionHandler);
 		};
 
 		/** 处理面板可视状态 */
