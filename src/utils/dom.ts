@@ -202,7 +202,7 @@ export function enableElementDraggable(header: HTMLElement, target: HTMLElement,
 	let pos3 = 0;
 	let pos4 = 0;
 
-	header.onmousedown = dragMouseDown;
+	header.addEventListener('mousedown', dragMouseDown);
 
 	function dragMouseDown(e: MouseEvent) {
 		e = e || window.event;
@@ -210,9 +210,9 @@ export function enableElementDraggable(header: HTMLElement, target: HTMLElement,
 		// get the mouse cursor position at startup:
 		pos3 = e.clientX;
 		pos4 = e.clientY;
-		document.onmouseup = closeDragElement;
+		document.addEventListener('mouseup', closeDragElement);
 		// call a function whenever the cursor moves:
-		document.onmousemove = elementDrag;
+		document.addEventListener('mousemove', elementDrag);
 	}
 
 	function elementDrag(e: MouseEvent) {
@@ -231,7 +231,49 @@ export function enableElementDraggable(header: HTMLElement, target: HTMLElement,
 	function closeDragElement() {
 		ondrag?.();
 		// stop moving when mouse button is released:
-		document.onmouseup = null;
-		document.onmousemove = null;
+		document.removeEventListener('mouseup', closeDragElement);
+		document.removeEventListener('mousemove', elementDrag);
+	}
+}
+
+/**
+ * 支持元素移动端拖动支持
+ */
+export function enableElementTouchDraggable(header: HTMLElement, target: HTMLElement, ondrag?: () => void) {
+	let pos1 = 0;
+	let pos2 = 0;
+	let pos3 = 0;
+	let pos4 = 0;
+
+	header.addEventListener('touchstart', dragTouchStart);
+
+	function dragTouchStart(e: TouchEvent) {
+		e = e || window.event;
+		const touch = e.touches[0];
+		// get the mouse cursor position at startup:
+		pos3 = touch.clientX;
+		pos4 = touch.clientY;
+		document.addEventListener('touchend', closeDragElement);
+		// call a function whenever the cursor moves:
+		document.addEventListener('touchmove', elementDrag);
+	}
+
+	function elementDrag(e: TouchEvent) {
+		e = e || window.event;
+		const touch = e.touches[0];
+		// calculate the new cursor position:
+		pos1 = pos3 - touch.clientX;
+		pos2 = pos4 - touch.clientY;
+		pos3 = touch.clientX;
+		pos4 = touch.clientY;
+		// set the element's new position:
+		target.style.top = Math.max(target.offsetTop - pos2, 10) + 'px';
+		target.style.left = target.offsetLeft - pos1 + 'px';
+	}
+	function closeDragElement() {
+		ondrag?.();
+		// stop moving when mouse button is released:
+		document.removeEventListener('touchend', closeDragElement);
+		document.removeEventListener('touchmove', elementDrag);
 	}
 }

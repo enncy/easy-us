@@ -44,6 +44,13 @@ export const $ui = {
 				$elements.tooltipContainer.style.left = e.x + 'px';
 			}
 		};
+		const onTouchMove = (e: TouchEvent) => {
+			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
+				const touch = e.touches[0];
+				$elements.tooltipContainer.style.top = touch.clientY + 'px';
+				$elements.tooltipContainer.style.left = touch.clientX + 'px';
+			}
+		};
 		const showTitle = (e: MouseEvent) => {
 			const dataTitle = target.getAttribute('data-title');
 			if ($elements.tooltipContainer) {
@@ -58,18 +65,25 @@ export const $ui = {
 			}
 
 			window.addEventListener('mousemove', onMouseMove);
+			window.addEventListener('touchmove', onTouchMove);
 		};
 		const hideTitle = () => {
 			if ($elements.tooltipContainer) {
 				$elements.tooltipContainer.style.display = 'none';
 			}
 			window.removeEventListener('mousemove', onMouseMove);
+			window.removeEventListener('touchmove', onTouchMove);
 		};
 		hideTitle();
 		target.addEventListener('mouseenter', showTitle as any);
 		target.addEventListener('click', showTitle as any);
 		target.addEventListener('mouseout', hideTitle);
 		target.addEventListener('mouseleave', hideTitle);
+		// 移动版适配
+		target.addEventListener('touchstart', showTitle as any);
+		target.addEventListener('touchend', hideTitle);
+		target.addEventListener('touchcancel', hideTitle);
+
 		target.addEventListener('blur', hideTitle);
 
 		return target;
