@@ -36,6 +36,8 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 	 * 控制元素是否可见，提供从 store 中的值来决定
 	 */
 	showIf?: string | [string, { (curr: any, pre: any, store: StoreProvider): boolean }];
+	/** 启用 for 属性 */
+	enableForAttribute?: boolean;
 	elementClassName?: string;
 	labelClassName?: string;
 	providerClassName?: string;
@@ -149,8 +151,10 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 			}
 		}
 
-		this.provider.setAttribute('id', this.key);
-		this.label.setAttribute('for', this.key);
+		if (this.enableForAttribute) {
+			this.provider.setAttribute('id', this.key);
+			this.label.setAttribute('for', this.key);
+		}
 		if (this.labelClassName) {
 			this.label.className = this.labelClassName;
 		}

@@ -164,7 +164,8 @@ export const $ui = {
 						showIf: config.showIf,
 						elementClassName: config.elementClassName,
 						labelClassName: config.labelClassName,
-						providerClassName: config.providerClassName
+						providerClassName: config.providerClassName,
+						enableForAttribute: config.enableForAttribute
 					});
 					element.store = store;
 					element.label.textContent = config.label;

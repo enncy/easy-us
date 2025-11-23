@@ -5,7 +5,14 @@ export interface Config<T extends keyof ConfigTagMap = keyof ConfigTagMap, V = a
 	extends Partial<
 		Pick<
 			ConfigElement<T>,
-			'tag' | 'attrs' | 'options' | 'showIf' | 'elementClassName' | 'labelClassName' | 'providerClassName'
+			| 'tag'
+			| 'attrs'
+			| 'options'
+			| 'showIf'
+			| 'elementClassName'
+			| 'labelClassName'
+			| 'providerClassName'
+			| 'enableForAttribute'
 		>
 	> {
 	defaultValue: V;
