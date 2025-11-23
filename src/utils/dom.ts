@@ -216,6 +216,9 @@ export function enableElementDraggable(header: HTMLElement, target: HTMLElement,
 	}
 
 	function elementDrag(e: MouseEvent) {
+		// 阻止冒泡
+		e.stopPropagation();
+
 		e = e || window.event;
 
 		// calculate the new cursor position:
@@ -259,6 +262,9 @@ export function enableElementTouchDraggable(header: HTMLElement, target: HTMLEle
 	}
 
 	function elementDrag(e: TouchEvent) {
+		// 阻止冒泡
+		e.stopPropagation();
+
 		e = e || window.event;
 		const touch = e.touches[0];
 		// calculate the new cursor position:
