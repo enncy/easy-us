@@ -132,21 +132,25 @@ export class CorsEventEmitter {
 		}
 	}
 
-	defineTopFunction<T extends (...args: any[]) => string | number | boolean | void>(
-		id: string,
-		func: T
-	): { (...args: Parameters<T>): Promise<ReturnType<T>> } {
+	defineTopFunction<
+		T extends (...args: any[]) => string | number | boolean | void | Promise<string | number | boolean | void>
+	>(func: T): { (...args: Parameters<T>): Promise<ReturnType<T>> } {
 		if ($gm.isInGMContext() === false) {
 			return (() => {}) as any;
 		}
-		const event_name = '_top_function_.' + id;
+		const randomId = $.uuid().replace(/-/g, '');
+		const event_name = '_top_function_.' + randomId;
 		if (self === top) {
-			cors.on(event_name, (args) => {
-				return func(...args);
+			cors.on(event_name, async (args) => {
+				return await func(...args);
 			});
 		}
 
 		return async (...args) => {
+			if (self === top) {
+				return (await func(...args)) as ReturnType<T>;
+			}
+
 			const res = await new Promise<ReturnType<T>>((resolve, reject) => {
 				try {
 					cors.emit(event_name, args, (val) => {
