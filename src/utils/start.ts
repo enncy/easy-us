@@ -18,6 +18,7 @@ export let $win: CustomWindow | undefined;
 export interface StartConfig {
 	/** 项目列表 */
 	projects: Project[];
+	mountElement?: HTMLElement | Element;
 	renderConfig?: {
 		renderScript: Script;
 		title: string;
@@ -258,7 +259,7 @@ async function mount(startConfig: StartConfig) {
 			// 同步菜单状态
 			updateMenusState(win, curr);
 		});
-		win.mount(document.body);
+		win.mount(startConfig.mountElement || document.body);
 
 		// 挂载全局元素
 		$elements.tooltipContainer = h('div', { className: 'tooltip-container' });
