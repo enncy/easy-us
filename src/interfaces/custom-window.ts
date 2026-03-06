@@ -137,7 +137,17 @@ export class CustomWindow {
 		$.loadCustomElements(definedCustomElements as { new (): any }[]);
 
 		this.wrapper = h('div');
+
+		// 挂载全局元素
+		// 禁止修改下面赋值顺序，防止平台篡改 attachShadow 导致无法使用 Shadow DOM 模式的窗口
+		// =====================================================
+		$elements.tooltipContainer = h('div', { className: 'tooltip-container' });
+		$elements.wrapper = this.wrapper;
+
 		this.root = this.wrapper.attachShadow({ mode: 'closed' });
+		$elements.root = this.root;
+		// =====================================================
+
 		/** 根元素 */
 		this.container = h('container-element');
 		this.root.append(this.container);

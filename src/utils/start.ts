@@ -261,11 +261,8 @@ async function mount(startConfig: StartConfig) {
 		});
 		win.mount(startConfig.mountElement || document.body);
 
-		// 挂载全局元素
-		$elements.tooltipContainer = h('div', { className: 'tooltip-container' });
-		$elements.root = win.root;
 		// 挂载全局提示元素
-		win.container.append($elements.tooltipContainer);
+		$elements.tooltipContainer && win.container.append($elements.tooltipContainer);
 
 		$win = win;
 	}

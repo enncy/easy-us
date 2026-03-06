@@ -3,5 +3,6 @@
  */
 export const $elements = {
 	tooltipContainer: undefined as HTMLDivElement | undefined,
-	root: undefined as ShadowRoot | undefined
+	root: undefined as ShadowRoot | undefined,
+	wrapper: undefined as HTMLDivElement | undefined
 };
