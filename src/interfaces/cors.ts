@@ -138,8 +138,8 @@ export class CorsEventEmitter {
 		if ($gm.isInGMContext() === false) {
 			return (() => {}) as any;
 		}
-		const randomId = $.uuid().replace(/-/g, '');
-		const event_name = '_top_function_.' + randomId;
+
+		const event_name = '_top_function_.' + getFuncId(func);
 		if (self === top) {
 			cors.on(event_name, async (args) => {
 				return await func(...args);
@@ -187,3 +187,19 @@ if (typeof GM_listValues !== 'undefined' && self === top) {
  * 全局跨域对象
  */
 export const cors = new CorsEventEmitter();
+
+function getFuncId(fn: Function) {
+	if (typeof fn !== 'function') {
+		throw new Error('first argument in defineTopFunction() is not Function!');
+	}
+
+	// 匿名函数：生成 16 位短哈希
+	const str = fn.toString();
+	let hash = 0;
+	for (let i = 0; i < str.length; i++) {
+		hash = (hash << 5) - hash + str.charCodeAt(i);
+		hash |= 0; // 转成整数
+	}
+	// 转成字母+数字，保证16位
+	return Math.abs(hash).toString(36).padStart(16, '0').slice(-16);
+}
