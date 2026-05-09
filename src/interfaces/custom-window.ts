@@ -356,6 +356,7 @@ export class CustomWindow {
 						script.projectName = project.name;
 						script.panel = panel;
 						script.header = this.container.header;
+						$elements.currentScriptPanel = panel;
 
 						this.container.body.replaceChildren(panel);
 
