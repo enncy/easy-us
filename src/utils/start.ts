@@ -131,11 +131,28 @@ export async function start(startConfig: StartConfig) {
 			script.emit('historychange', 'push', startConfig);
 			script.onhistorychange?.('push', startConfig);
 		});
+
+		const new_scripts = $.getMatchedScripts(startConfig.projects, [location.href]).sort(
+			(a, b) => b.priority - a.priority
+		);
+
+		new_scripts.forEach((ns) => {
+			ns.emit('historychanged', 'pushed', startConfig);
+			ns.onhistorychanged?.('pushed', startConfig);
+		});
 	});
 	window.addEventListener('replaceState', () => {
 		scripts.forEach((script) => {
 			script.emit('historychange', 'replace', startConfig);
 			script.onhistorychange?.('replace', startConfig);
+		});
+
+		const new_scripts = $.getMatchedScripts(startConfig.projects, [location.href]).sort(
+			(a, b) => b.priority - a.priority
+		);
+		new_scripts.forEach((ns) => {
+			ns.emit('historychanged', 'replaced', startConfig);
+			ns.onhistorychanged?.('replaced', startConfig);
 		});
 	});
 

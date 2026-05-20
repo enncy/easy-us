@@ -49,6 +49,11 @@ type ScriptEvent = {
 	hashchange: (...args: any[]) => any;
 	/** 当 history 被 push 或者 replace 修改时运行的事件 */
 	historychange: (type: 'push' | 'replace', ...args: any[]) => any;
+	/**
+	 * 当 history 的 push 或者 replace 执行完成后，更新后的链接匹配到的钩子
+	 * 与 onhistorychange 事件不同的是，这个事件将使用新界面的 URL 去寻找所对应的脚本执行
+	 */
+	historychanged?: (type: 'pushed' | 'replaced', ...args: any[]) => any;
 	/** 在渲染的时候执行的事件，（面板之间切换时会重复渲染） */
 	render: (elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
 	/** 在页面离开时执行的事件 */
@@ -68,6 +73,11 @@ export class BaseScript<E extends ScriptEvent = ScriptEvent> extends CommonEvent
 	onhashchange?: (...args: any[]) => any;
 	/** 当 history 被 push 或者 replace 修改时运行的钩子 */
 	onhistorychange?: (type: 'push' | 'replace', ...args: any[]) => any;
+	/**
+	 * 当 history 的 push 或者 replace 执行完成后，更新后的链接匹配到的钩子
+	 * 与 onhistorychange 事件不同的是，这个事件将使用新界面的 URL 去寻找所对应的脚本执行
+	 */
+	onhistorychanged?: (type: 'pushed' | 'replaced', ...args: any[]) => any;
 	/** 在渲染的时候执行的钩子，（面板之间切换时会重复渲染） */
 	onrender?: (elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
 	/** 在页面离开时执行的钩子 */
@@ -140,6 +150,7 @@ export class Script<
 		onbeforeunload,
 		onrender,
 		onhistorychange,
+		onhistorychanged,
 		methods,
 		priority
 	}: ScriptOptions<C> & {
@@ -150,6 +161,7 @@ export class Script<
 		onbeforeunload?: (this: Script<C, M>, ...args: any) => any;
 		onrender?: (this: Script<C, M>, elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
 		onhistorychange?: (this: Script<C, M>, type: 'push' | 'replace', ...args: any[]) => any;
+		onhistorychanged?: (this: Script<C, M>, type: 'pushed' | 'replaced', ...args: any[]) => any;
 		methods?: (this: Script<C>) => M;
 	}) {
 		super();
@@ -165,6 +177,7 @@ export class Script<
 		this.onbeforeunload = this.errorHandler(onbeforeunload);
 		this.onrender = this.errorHandler(onrender);
 		this.onhistorychange = this.errorHandler(onhistorychange);
+		this.onhistorychanged = this.errorHandler(onhistorychanged);
 		this.methods = methods?.bind(this)() || Object.create({});
 		this.priority = priority ?? 0;
 
