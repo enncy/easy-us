@@ -10,11 +10,11 @@
 		"assets"
 	],
 	"scripts": {
-		"build": "tsc && vite build && build:dts",
+		"build": "tsc &&  vite build && npm run build:dts ",
 		"dev": "vite build -w",
 		"pub": "npm run build && npm version patch && npm publish && git push origin main --tags",
 		"init-commitizen": "commitizen init cz-conventional-changelog --save --save-exact",
-		"build:dts": "npx dts-bundle-generator ./lib/index.d.ts -o ./dist/index.d.ts"
+		"build:dts": "dts-bundle-generator -o ./dist/index.d.ts  ./src/index.ts "
 	},
 	"repository": {
 		"type": "git",
