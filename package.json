@@ -41,6 +41,7 @@
 		"commitizen": "^4.3.0",
 		"cz-conventional-changelog": "^3.3.0",
 		"dotenv": "^16.0.3",
+		"dts-bundle-generator": "^9.5.1",
 		"rollup-plugin-visualizer": "^5.9.0",
 		"typedoc": "^0.23.23",
 		"vite": "^2.9.15",

@@ -37,8 +37,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	attrs?: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
-		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
-		: unknown
+			? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+			: unknown
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**
  * 创建元素，效果等同于 document.createElement
@@ -60,8 +60,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 		| (K extends AllElementTagKeys
 				? ElementAttrs<K>
 				: K extends abstract new () => any
-				? Partial<CustomElementStyleAttrs<InstanceType<K>>>
-				: unknown)
+					? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+					: unknown)
 		| ElementChildren
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**
@@ -78,8 +78,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	attrs: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
-		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
-		: unknown,
+			? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+			: unknown,
 	children?: ElementChildren
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**
@@ -93,8 +93,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 	attrs: K extends AllElementTagKeys
 		? ElementAttrs<K>
 		: K extends abstract new () => any
-		? Partial<CustomElementStyleAttrs<InstanceType<K>>>
-		: unknown,
+			? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+			: unknown,
 	handler?: ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K;
 /**
@@ -120,8 +120,8 @@ export function h<K extends AllElementTagKeys | CustomElementConstructor>(
 		| (K extends AllElementTagKeys
 				? ElementAttrs<K>
 				: K extends abstract new () => any
-				? Partial<CustomElementStyleAttrs<InstanceType<K>>>
-				: unknown)
+					? Partial<CustomElementStyleAttrs<InstanceType<K>>>
+					: unknown)
 		| ElementChildren,
 	childrenOrHandler?: ElementChildren | ElementHandler<K extends AllElementTagKeys ? K : typeof HTMLDivElement>
 ): K extends AllElementTagKeys ? AllElementTagMaps[K] : K {
