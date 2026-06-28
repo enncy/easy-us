@@ -14,7 +14,7 @@
 		"dev": "vite build -w",
 		"pub": "npm run build && npm version patch && npm publish && git push origin main --tags",
 		"init-commitizen": "commitizen init cz-conventional-changelog --save --save-exact",
-		"build:dts": "dts-bundle-generator -o ./dist/index.d.ts  ./src/index.ts "
+		"build:dts": "dts-bundle-generator -o ./dist/index.d.ts  ./src/dts.ts "
 	},
 	"repository": {
 		"type": "git",
