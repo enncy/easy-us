@@ -83,7 +83,6 @@ export const $ui = {
 		hideTitle();
 		target.addEventListener('mouseenter', showTitle as any);
 		target.addEventListener('click', showTitle as any);
-		target.addEventListener('mouseout', hideTitle);
 		target.addEventListener('mouseleave', hideTitle);
 		// 移动版适配
 		target.addEventListener('touchstart', showTitle as any);
