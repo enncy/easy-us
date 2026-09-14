@@ -97,14 +97,35 @@ export const $ui = {
 	scriptPanel(script: Script, store: StoreProvider, opts?: { onload?: (el: ConfigElement) => void }) {
 		const scriptPanel = h('script-panel-element', { name: script.name });
 
+		// notes 提示板块收缩状态持久化键（按脚本独立记忆）
+		const notesExpandedKey = `_notes_expanded_${script.fullName()}`;
+		// 读取持久化状态，默认展开
+		scriptPanel.setNotesExpanded(store.get(notesExpandedKey, true));
+		// 点击头部切换收缩/展开，并持久化状态
+		scriptPanel.notesHeader.addEventListener('click', () => {
+			const expanded = !scriptPanel.isNotesExpanded();
+			scriptPanel.setNotesExpanded(expanded);
+			store.set(notesExpandedKey, expanded);
+		});
+		// 为头部绑定提示气泡
+		scriptPanel.notesHeader.title = '点击收缩 / 展开';
+		this.tooltip(scriptPanel.notesHeader);
+
+		// 提示内容为空时隐藏整个提示区域
+		const updateNotesVisibility = (content?: string) => {
+			scriptPanel.notesContainer.style.display = content?.trim() ? '' : 'none';
+		};
+
 		// 监听提示内容改变
 		script.onConfigChange('notes', (pre, curr) => {
-			scriptPanel.notesContainer.innerHTML = script.cfg.notes || '';
+			scriptPanel.notesBody.innerHTML = script.cfg.notes || '';
+			updateNotesVisibility(script.cfg.notes);
 		});
 		// 注入 panel 对象 ， 脚本可修改 panel 对象进行面板的内容自定义
 		script.panel = scriptPanel;
 
-		scriptPanel.notesContainer.innerHTML = script.configs?.notes?.defaultValue || '';
+		scriptPanel.notesBody.innerHTML = script.configs?.notes?.defaultValue || '';
+		updateNotesVisibility(script.configs?.notes?.defaultValue);
 
 		let configs = Object.create({});
 		const elList = [];

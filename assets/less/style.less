@@ -62,7 +62,7 @@ hr {
 	-webkit-appearance: none;
 
 	width: fit-content;
-	min-width: 36px;
+	min-width: 48px;
 	height: 20px;
 	border-radius: 100px;
 	display: flex;
@@ -80,7 +80,7 @@ hr {
 	}
 
 	&:checked::before {
-		transform: translate(100%, 0px);
+		transform: translate(24px, 0px);
 	}
 
 	&::before {
@@ -179,7 +179,7 @@ header-element {
 	background-color: white;
 	border-radius: 8px 8px 0px 0px;
 	user-select: none;
-	padding: 4px;
+	padding: 2px 4px;
 	padding-bottom: 0px;
 
 	.extra-menu-bar {
@@ -209,14 +209,17 @@ header-element {
 		}
 	}
 
+	.header-menu-bar {
+		align-items: center;
+		gap: 2px;
+	}
+
 	.profile {
-		flex: 1;
 		cursor: move;
 	}
 
-	.switch:hover,
-	.dropdown:hover {
-		background-color: #f3f3f3;
+	.switch:hover {
+		background-color: #f0f0f0;
 	}
 
 	.close:hover {
@@ -229,8 +232,32 @@ header-element {
 	}
 
 	.dropdown {
-		line-height: 24px;
-		text-decoration: underline;
+		line-height: 20px;
+
+		.dropdown-trigger-element {
+			padding: 1px 8px;
+			border-radius: 6px;
+			font-weight: 500;
+			transition: background-color 0.2s ease, color 0.2s ease;
+
+			&:hover {
+				background-color: #f0f0f0;
+			}
+		}
+
+		&.active {
+			.dropdown-trigger-element {
+				background-color: #1890ff1a;
+				color: #1890ff;
+			}
+		}
+	}
+
+	.switch {
+		border-radius: 6px;
+		line-height: 20px;
+		margin-left: auto;
+		transition: background-color 0.2s ease;
 	}
 
 	.switch,
@@ -302,6 +329,30 @@ script-panel-element + script-panel-element {
 	margin: 0px 8px;
 	line-height: 26px;
 	letter-spacing: 1px;
+
+	.notes-header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+		user-select: none;
+		font-weight: bold;
+	}
+
+	.notes-collapse-icon {
+		font-size: 12px;
+		transition: transform 0.2s;
+	}
+
+	&.collapsed {
+		.notes-body {
+			display: none;
+		}
+
+		.notes-collapse-icon {
+			transform: rotate(-90deg);
+		}
+	}
 }
 
 .secondary {
@@ -707,6 +758,8 @@ search-infos-element {
 
 		.question {
 			font-weight: bold;
+			max-height: 200px;
+			overflow: auto;
 		}
 		.answer {
 			color: #7c7c7c;
@@ -726,10 +779,11 @@ search-infos-element {
 		}
 
 		.search-result-answer-tag {
-			padding: 2px 4px;
+			padding: 2px 6px;
 			border-radius: 2px;
 			font-size: 12px;
 			cursor: pointer;
+			margin-right: 6px;
 		}
 		.search-result-answer-tag + .search-result-answer-tag {
 			margin-left: 4px;
@@ -828,6 +882,12 @@ search-infos-element {
 	padding: 8px 12px;
 	margin-bottom: 12px;
 	line-height: 20px;
+	overflow: auto;
+}
+
+.search-info-title .title-content {
+	max-height: 200px;
+	overflow: auto;
 }
 
 .search-info-details {
@@ -873,26 +933,6 @@ search-infos-element {
 	& *::selection {
 		background-color: #ffffff6b;
 	}
-}
-
-/* 设置滚动条的样式 */
-::-webkit-scrollbar {
-	width: 10px;
-	height: 10px;
-}
-
-/* 滚动槽 */
-::-webkit-scrollbar-track {
-	background: #ffffffd8;
-	border-radius: 4px;
-	margin: 4px;
-}
-
-/* 滚动条滑块 */
-::-webkit-scrollbar-thumb {
-	border-radius: 4px;
-	background: rgba(0, 0, 0, 0.253);
-	box-shadow: inset006pxrgba(0, 0, 0, 0.3);
 }
 
 .markdown {
@@ -949,10 +989,11 @@ search-infos-element {
 	position: absolute;
 	background-color: #ffffff;
 	overflow: auto;
-	box-shadow: 0px 8px 16px 0px #00000033;
+	box-shadow: 0 6px 16px 0 #00000014, 0 3px 6px -4px #0000001f;
 	z-index: 1;
-	border-radius: 4px;
-	padding: 8px 12px;
+	border: 1px solid #e8e8e8;
+	border-radius: 8px;
+	padding: 4px;
 	min-width: 120px;
 
 	&.show {
@@ -965,17 +1006,20 @@ search-infos-element {
 	z-index: 999;
 
 	.dropdown-option {
-		padding-left: 4px;
+		padding: 4px 12px;
 		white-space: nowrap;
+		border-radius: 4px;
+		transition: background-color 0.2s ease, color 0.2s ease;
 	}
 
 	.dropdown-option:hover {
-		background-color: #f3f3f3;
+		background-color: #f5f5f5;
 	}
 
 	.dropdown-option.active {
 		background-color: #1890ff1a;
 		color: #1890ff;
+		font-weight: 500;
 	}
 }
 
@@ -987,6 +1031,8 @@ search-infos-element {
 	label {
 		padding-left: 12px;
 	}
+
+	animation: fade-in 0.5s;
 }
 
 .alert-info-wrapper {
@@ -1052,4 +1098,50 @@ modal-element {
 	100% {
 		opacity: 0;
 	}
+}
+
+.checkbox-label {
+	display: inline-block !important;
+	position: relative;
+	cursor: pointer;
+	font-size: 16px;
+	color: #2c3e50;
+}
+
+/* 隐藏原始复选框 */
+.checkbox-input {
+	position: absolute;
+	opacity: 0;
+	width: 0;
+	height: 0;
+}
+
+/* 自定义按钮样式 */
+.checkbox-label::after {
+	content: '';
+	display: inline-block;
+	border-radius: 50%;
+	transition: all 0.1s ease;
+	position: relative;
+	margin-left: 4px;
+	vertical-align: middle;
+}
+
+/* 向下箭头（未选中状态） */
+.checkbox-label::before {
+	content: '🔽';
+	position: absolute;
+	width: 0;
+	height: 0;
+	right: 8px;
+	// border-left: 10px solid transparent;
+	// border-right: 10px solid transparent;
+	// border-top: 15px solid rgb(0, 0, 0);
+	transition: all 0.1s ease;
+	z-index: 2;
+}
+
+/* 向上箭头（选中状态） */
+.checked .checkbox-label::before {
+	content: '🔼';
 }

@@ -307,7 +307,6 @@ export class CustomWindow {
 				}
 
 				dropdown.triggerElement = h('div', { className: 'dropdown-trigger-element' }, project.name);
-				dropdown.triggerElement.style.padding = '0px 8px';
 				dropdown.content.append(...options);
 
 				scriptDropdowns.push(dropdown);
@@ -334,7 +333,7 @@ export class CustomWindow {
 		this.container.header.replaceChildren();
 		this.container.header.append(
 			h('div', { style: { width: '100%' } }, [
-				h('div', { style: { display: 'flex', width: '100%' } }, [
+				h('div', { className: 'header-menu-bar', style: { display: 'flex', width: '100%' } }, [
 					profile,
 					...scriptDropdowns,
 					this.container.header.visualSwitcher || ''
