@@ -16,6 +16,11 @@ export class ContainerElement extends IElement {
 	connectedCallback() {
 		this.append(this.header, this.body, this.footer);
 
+		// 阻止面板内的滚动事件传递给网页（wheel/touchmove 为 composed 事件，会穿透 Shadow DOM 冒泡到页面）
+		const stopScrollPropagation = (e: Event) => e.stopPropagation();
+		this.addEventListener('wheel', stopScrollPropagation);
+		this.addEventListener('touchmove', stopScrollPropagation);
+
 		$.onresize(this, (cont) => {
 			cont.body.style.maxHeight = window.innerHeight - this.header.clientHeight - 100 + 'px';
 			cont.body.style.maxWidth = window.innerWidth - 50 + 'px';

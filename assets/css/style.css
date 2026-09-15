@@ -38,7 +38,7 @@ hr {
   padding: 2px 8px;
   margin: 0px;
   background-color: #eef2f7;
-  border-radius: 2px;
+  border-radius: 8px;
   color: black;
 }
 .base-style-input::placeholder {
@@ -167,24 +167,22 @@ container-element {
   -moz-osx-font-smoothing: grayscale;
   color: #636363;
   box-shadow: 0 0 24px -12px #3f3f3f;
-  border-radius: 8px;
+  border-radius: 12px;
   letter-spacing: 0.5px;
   border: 1px solid #c1c1c1;
 }
 header-element {
   display: flex;
   align-items: center;
-  background-color: white;
-  border-radius: 8px 8px 0px 0px;
+  border-radius: 12px 12px 0px 0px;
   user-select: none;
-  padding: 2px 4px;
   padding-bottom: 0px;
 }
 header-element .extra-menu-bar {
   width: 100%;
   padding: 4px;
-  padding-bottom: 0px;
-  margin-top: 4px;
+  padding-bottom: 4px;
+  background-color: white;
   border-top: 1px solid #e8e8e8;
   /** 默认隐藏，一直到需要激活的时候再更改 */
   display: none;
@@ -238,14 +236,19 @@ header-element .extra-menu-bar .script-panel-link + .script-panel-link {
   margin-left: 4px;
 }
 header-element .header-menu-bar {
+  padding-top: 4px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #f5f7fa;
   align-items: center;
-  gap: 2px;
+  gap: 0px;
 }
 header-element .profile {
   cursor: move;
+  margin-right: 4px;
 }
 header-element .switch:hover {
-  background-color: #f0f0f0;
+  background-color: #e4e9f0;
 }
 header-element .close:hover {
   background-color: #ff000038;
@@ -258,20 +261,55 @@ header-element .dropdown {
   line-height: 20px;
 }
 header-element .dropdown .dropdown-trigger-element {
-  padding: 1px 8px;
-  border-radius: 6px;
+  padding: 2px 12px;
+  border: none;
+  border-top: 1px solid #00000000;
+  border-radius: 8px 8px 0px 0px;
   font-weight: 500;
+  color: #606266;
+  background-color: transparent;
+  cursor: pointer;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 header-element .dropdown .dropdown-trigger-element:hover {
-  background-color: #f0f0f0;
-}
-header-element .dropdown.active .dropdown-trigger-element {
-  background-color: #1890ff1a;
+  background-color: #ffffff80;
   color: #1890ff;
 }
+header-element .dropdown.active .dropdown-trigger-element {
+  --tab-border: 1px;
+  --tab-border-color: #e8ecf1;
+  --tab-bg: #ffffff;
+  --tab-radius-limit: 8px;
+  --tab-radius-grad: #0000 calc(69% - var(--tab-border)), var(--tab-border-color) calc(69% - var(--tab-border) + 0.25px), var(--tab-border-color) 69%, var(--tab-bg) calc(69% + 0.25px);
+  --radius-start: radial-gradient(circle at top left, var(--tab-radius-grad));
+  --radius-end: radial-gradient(circle at top right, var(--tab-radius-grad));
+  position: relative;
+  color: #1890ff;
+  font-weight: 600;
+  padding: 2px 11px;
+  background-color: var(--tab-bg);
+  border: var(--tab-border) solid var(--tab-border-color);
+  border-bottom: none;
+  border-radius: var(--tab-radius-limit) var(--tab-radius-limit) 0 0;
+  box-shadow: 0 1px 0 var(--tab-bg);
+}
+header-element .dropdown.active .dropdown-trigger-element::before {
+  content: '';
+  z-index: 1;
+  position: absolute;
+  inset: auto calc(-1 * var(--tab-radius-limit)) -1px calc(-1 * var(--tab-radius-limit));
+  height: calc(var(--tab-radius-limit) + var(--tab-border));
+  transform: translate(0px, 1px);
+  pointer-events: none;
+  background-image: var(--radius-start), var(--radius-end), linear-gradient(var(--tab-bg), var(--tab-bg));
+  background-size: var(--tab-radius-limit) var(--tab-radius-limit), var(--tab-radius-limit) var(--tab-radius-limit), 100% var(--tab-border);
+  background-position: top left,
+						top right,
+						bottom left;
+  background-repeat: no-repeat;
+}
 header-element .switch {
-  border-radius: 6px;
+  border-radius: 8px;
   line-height: 20px;
   margin-left: auto;
   transition: background-color 0.2s ease;
@@ -305,11 +343,12 @@ header-element .profile {
   overflow: auto;
   width: auto;
   height: 100%;
+  overscroll-behavior: contain;
 }
 script-panel-element {
   display: block;
   background-color: white;
-  border-radius: 0px 0px 8px 8px;
+  border-radius: 0px 0px 12px 12px;
   padding: 0px 8px 12px 8px;
   overflow: auto;
 }
@@ -324,12 +363,13 @@ script-panel-element + script-panel-element {
 }
 .card {
   background-color: white;
-  border-radius: 2px;
+  border-radius: 10px;
   padding: 0px 8px;
 }
 .notes {
   background: #0099ff0e;
   border-left: 4px solid #0099ff65;
+  border-radius: 4px 10px 10px 4px;
   width: -webkit-fill-available;
   margin: 0px 8px;
   line-height: 26px;
@@ -368,7 +408,7 @@ script-panel-element + script-panel-element {
   white-space: normal;
   max-width: 200px;
   height: auto;
-  border-radius: 2px;
+  border-radius: 6px;
   line-height: 18px;
 }
 .configs-container.lock {
@@ -431,7 +471,7 @@ script-panel-element + script-panel-element {
   outline: none;
   border: none;
   border: 1px solid #e4e4e4;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 2px 8px;
   border: 1px solid #ffffff00;
 }
@@ -470,7 +510,7 @@ script-panel-element + script-panel-element {
   padding: 2px 8px;
   margin: 0px;
   background-color: #eef2f7;
-  border-radius: 2px;
+  border-radius: 8px;
   color: black;
   border: 1px solid #ffffff00;
 }
@@ -573,7 +613,7 @@ script-panel-element + script-panel-element {
 }
 .configs .configs-body config-element .config-wrapper > *:not(.tooltip) {
   background-color: #eef2f7;
-  border-radius: 2px;
+  border-radius: 8px;
   color: black;
   float: right;
 }
@@ -592,7 +632,7 @@ script-panel-element + script-panel-element {
 }
 .message-container message-element {
   display: flex;
-  border-radius: 4px;
+  border-radius: 8px;
   padding: 4px 12px;
   margin-bottom: 4px;
 }
@@ -641,7 +681,7 @@ modal-element {
   top: 50%;
   left: 50%;
   background-color: white;
-  border-radius: 4px;
+  border-radius: 14px;
   box-shadow: 0px 0px 24px -12px black;
   border: 1px solid #929292;
   height: fit-content;
@@ -680,7 +720,7 @@ modal-element .modal-input {
   padding: 2px 8px;
   margin: 0px;
   background-color: #eef2f7;
-  border-radius: 2px;
+  border-radius: 8px;
   color: black;
   border: 1px solid #ffffff00;
   width: -webkit-fill-available;
@@ -829,7 +869,7 @@ container-element.minimize .footer {
 }
 container-element.minimize header-element {
   padding: 8px;
-  border-radius: 8px;
+  border-radius: 12px;
   box-shadow: 0px 0px 24px -12px black;
 }
 .user-guide > li {
@@ -1067,8 +1107,8 @@ search-infos-element .error {
   overflow: auto;
   box-shadow: 0 6px 16px 0 #00000014, 0 3px 6px -4px #0000001f;
   z-index: 1;
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
+  border: 1px solid #e8ecf1;
+  border-radius: 12px;
   padding: 4px;
   min-width: 120px;
 }
@@ -1082,7 +1122,7 @@ search-infos-element .error {
 .dropdown-content .dropdown-option {
   padding: 4px 12px;
   white-space: nowrap;
-  border-radius: 4px;
+  border-radius: 8px;
   transition: background-color 0.2s ease, color 0.2s ease;
 }
 .dropdown-content .dropdown-option:hover {
