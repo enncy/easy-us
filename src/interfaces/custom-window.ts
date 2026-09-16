@@ -65,9 +65,9 @@ export type VisualType = 'normal' | 'minimize' | 'hidden';
 export type CustomWindowRenderConfig = {
 	render: {
 		/**
-		 * 窗口标题
+		 * 窗口标题，支持文本、HTML 字符串或自定义元素
 		 */
-		title: string;
+		title: string | HTMLElement;
 		/**
 		 * 默认面板名
 		 */
@@ -259,8 +259,16 @@ export class CustomWindow {
 
 	private initHeader(urls: string[], currentPanelName: string) {
 		/** 版本  */
+		const title = this.config.render.title;
 		const profile = $ui.tooltip(
-			h('div', { className: 'profile', title: '菜单栏（可拖动区域）' }, this.config.render.title || '无标题')
+			h('div', { className: 'profile', title: '菜单栏（可拖动区域）' }, (el) => {
+				// 支持 HTMLElement 或 文本/HTML 字符串
+				if (title instanceof HTMLElement) {
+					el.append(title);
+				} else {
+					el.innerHTML = title || '无标题';
+				}
+			})
 		);
 
 		const scriptDropdowns: DropdownElement[] = [];

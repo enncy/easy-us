@@ -21,7 +21,8 @@ export interface StartConfig {
 	mountElement?: HTMLElement | Element;
 	renderConfig?: {
 		renderScript: Script;
-		title: string;
+		/** 窗口标题，支持文本、HTML 字符串或自定义元素 */
+		title: string | HTMLElement;
 		styles: string[];
 		defaultPanelName: string;
 	};
