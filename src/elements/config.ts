@@ -41,6 +41,10 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 	elementClassName?: string;
 	labelClassName?: string;
 	providerClassName?: string;
+	/** 前置插槽，插入到输入元素之前，支持字符串（HTML）或元素 */
+	prefixSlot?: string | HTMLElement;
+	/** 后置插槽，插入到输入元素之后，支持字符串（HTML）或元素 */
+	suffixSlot?: string | HTMLElement;
 
 	_onload?: (this: ConfigTagMap[T], el: this) => void;
 
@@ -165,7 +169,22 @@ export class ConfigElement<T extends keyof ConfigTagMap = 'input'> extends IElem
 			this.className = this.elementClassName;
 		}
 
-		this.wrapper.replaceChildren(this.provider);
+		// 存在前后插槽时，用容器包裹 插槽 + 输入元素
+		if (this.prefixSlot !== undefined || this.suffixSlot !== undefined) {
+			const toNode = (slot: string | HTMLElement, className: string): HTMLElement =>
+				typeof slot === 'string' ? h('span', { className, innerHTML: slot }) : slot;
+			const children: HTMLElement[] = [];
+			if (this.prefixSlot !== undefined) {
+				children.push(toNode(this.prefixSlot, 'config-prefix'));
+			}
+			children.push(this.provider);
+			if (this.suffixSlot !== undefined) {
+				children.push(toNode(this.suffixSlot, 'config-suffix'));
+			}
+			this.wrapper.replaceChildren(h('div', { className: 'config-provider-container' }, children));
+		} else {
+			this.wrapper.replaceChildren(this.provider);
+		}
 		this.append(this.label, this.wrapper);
 
 		// 合并元素属性

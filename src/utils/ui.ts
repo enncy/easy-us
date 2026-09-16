@@ -135,7 +135,7 @@ export const $ui = {
 				// 如果存在分隔符
 				if (cfg.separator) {
 					// 将之前的配置项生成配置区域，并添加到列表中
-					elList.push(this.configsArea(this.configs(script.namespace, store, configs || {}, opts?.onload)));
+					elList.push(this.configsArea(this.configs(script.namespace, store, configs || {}, opts?.onload, script)));
 					// 添加分隔符
 					elList.push(h('div', { className: 'separator', style: { margin: '0px 8px' } }, cfg.separator));
 					// 清空配置项
@@ -147,7 +147,7 @@ export const $ui = {
 		}
 		// 如果还有剩余的配置项，生成配置区域，并添加到列表中
 		if (Object.keys(configs).length > 0) {
-			elList.push(this.configsArea(this.configs(script.namespace, store, configs || {}, opts?.onload)));
+			elList.push(this.configsArea(this.configs(script.namespace, store, configs || {}, opts?.onload, script)));
 		}
 
 		scriptPanel.configsContainer.replaceChildren(...elList);
@@ -169,8 +169,11 @@ export const $ui = {
 		namespace: string | undefined,
 		store: StoreProvider,
 		configs: T,
-		onload?: (el: ConfigElement) => void
+		onload?: (el: ConfigElement) => void,
+		script?: Script
 	) {
+		/** 解析插槽内容，支持函数懒加载（this 绑定 script，参数传 cfg） */
+		const resolveSlot = (slot: any) => (typeof slot === 'function' ? slot.call(script, script?.cfg) : slot);
 		const elements: { [K in keyof T]: ConfigElement<T[K]['tag']> } = Object.create({});
 		for (const key in configs) {
 			if (Object.prototype.hasOwnProperty.call(configs, key)) {
@@ -191,7 +194,9 @@ export const $ui = {
 						elementClassName: config.elementClassName,
 						labelClassName: config.labelClassName,
 						providerClassName: config.providerClassName,
-						enableForAttribute: config.enableForAttribute
+						enableForAttribute: config.enableForAttribute,
+						prefixSlot: resolveSlot(config.prefixSlot),
+						suffixSlot: resolveSlot(config.suffixSlot)
 					});
 					element.store = store;
 					element.label.textContent = config.label;
