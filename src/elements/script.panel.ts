@@ -32,7 +32,7 @@ export class ScriptPanelElement extends IElement {
 	connectedCallback() {
 		this.separator.innerText = this.name || '';
 		this.notesHeader.append(
-			h('span', { className: 'notes-title' }, '提示'),
+			h('span', { className: 'notes-title' }, [h('span', { className: 'notes-info-icon' }, 'i'), '提示']),
 			h('span', { className: 'notes-collapse-icon' }, '▼')
 		);
 		this.notesContainer.append(this.notesHeader);

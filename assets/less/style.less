@@ -1,3 +1,19 @@
+/** ===== 主题主色（一键更换） ===== */
+/** 主色 */
+@primary: #2b67ff;
+/** 主色 hover 变浅 */
+@primary-hover: lighten(@primary, 10%);
+/** 主色浅色变体（禁用态等） */
+@primary-light: lighten(@primary, 25%);
+/** 激活态浅底 */
+@primary-soft: fade(@primary, 10%);
+/** 极浅底（提示卡片、hover 背景） */
+@primary-ghost: fade(@primary, 6%);
+/** 主色边框/竖条 */
+@primary-border: fade(@primary, 40%);
+/** focus 光环 */
+@primary-ring: fade(@primary, 32%);
+
 /** 默认字体 */
 @base-font-family: Menlo, Monaco, Consolas, 'Courier New', monospace;
 /** 输入框默认边距 */
@@ -12,7 +28,7 @@ ol {
 }
 
 a {
-	color: #1890ff;
+	color: @primary;
 }
 
 hr {
@@ -27,13 +43,13 @@ hr {
 .base-style-active-form-control {
 	border: 1px solid #ffffff00;
 	&:focus {
-		border: 1px solid #0e8de290;
-		box-shadow: 0px 0px 4px #0e8de252;
+		border: 1px solid @primary;
+		box-shadow: 0px 0px 4px @primary-ring;
 	}
 
 	&:focus:not([type='checkbox'], [type='radio']) {
-		border: 1px solid #0e8de290;
-		box-shadow: 0px 0px 4px #0e8de252;
+		border: 1px solid @primary;
+		box-shadow: 0px 0px 4px @primary-ring;
 		background-color: white !important;
 	}
 
@@ -73,7 +89,7 @@ hr {
 	background: gainsboro;
 
 	&:checked {
-		background: #1890ff;
+		background: @primary;
 	}
 	&:disabled {
 		background-color: #f7f7f78b;
@@ -99,14 +115,15 @@ hr {
 	-webkit-appearance: none;
 
 	border-radius: 4px;
-	background-color: white;
-	border: 1px solid #2c92ff;
-	color: #409eff;
+	background-color: @primary;
+	border: 1px solid @primary;
+	color: white;
 	cursor: pointer !important;
 	margin-bottom: 4px;
+	transition: all 0.2s ease;
 
 	&:active {
-		box-shadow: 0px 0px 8px #0e8de2a5;
+		box-shadow: 0px 0px 8px fade(@primary, 65%);
 	}
 
 	& + & {
@@ -114,23 +131,26 @@ hr {
 	}
 
 	&:hover {
-		background-color: #7abbff24;
-	}
-
-	&.danger:hover {
-		background-color: #ffdede86;
-	}
-
-	&:disabled {
-		background-color: white;
-		border: 1px solid #c0c0c0;
-		color: #aeaeae;
-		cursor: not-allowed;
+		background-color: @primary-hover;
+		border-color: @primary-hover;
 	}
 
 	&.danger {
-		color: #f36669;
-		border-color: #dd5a5d;
+		background-color: #f56c6c;
+		border-color: #f56c6c;
+		color: white;
+	}
+
+	&.danger:hover {
+		background-color: #f78989;
+		border-color: #f78989;
+	}
+
+	&:disabled {
+		background-color: @primary-light;
+		border-color: @primary-light;
+		color: white;
+		cursor: not-allowed !important;
 	}
 
 	&:disabled:active {
@@ -141,9 +161,15 @@ hr {
 .base-style-button-secondary {
 	.base-style-button();
 
-	color: gray;
+	color: #606266;
 	background-color: white;
 	border: 1px solid #dcdcdc;
+
+	&:hover {
+		color: @primary;
+		border-color: lighten(@primary, 30%);
+		background-color: @primary-ghost;
+	}
 }
 
 container-element.hidden {
@@ -168,6 +194,7 @@ container-element {
 	border-radius: 12px;
 	letter-spacing: 0.5px;
 	border: 1px solid #c1c1c1;
+	background-color: #f5f5f5;
 }
 
 @base-height: 32px;
@@ -197,9 +224,9 @@ header-element {
 		}
 
 		.script-panel-link.active {
-			background-color: #1890ff1a;
-			border-color: #1890ff;
-			color: #1890ff;
+			background-color: @primary-soft;
+			border-color: @primary;
+			color: @primary;
 		}
 
 		.script-panel-link + .script-panel-link {
@@ -253,7 +280,7 @@ header-element {
 
 			&:hover {
 				background-color: #ffffff80;
-				color: #1890ff;
+				color: @primary;
 			}
 		}
 
@@ -271,7 +298,7 @@ header-element {
 				--radius-end: radial-gradient(circle at top right, var(--tab-radius-grad));
 
 				position: relative;
-				color: #1890ff;
+				color: @primary;
 				font-weight: 600;
 				// 左右 padding 补偿侧边 border，保持文字位置与未激活态一致
 				padding: 2px 11px;
@@ -378,8 +405,8 @@ script-panel-element + script-panel-element {
 }
 
 .notes {
-	background: #0099ff0e;
-	border-left: 4px solid #0099ff65;
+	background: @primary-ghost;
+	border-left: 4px solid @primary-border;
 	border-radius: 4px 10px 10px 4px;
 	width: -webkit-fill-available;
 	margin: 0px 8px;
@@ -393,6 +420,28 @@ script-panel-element + script-panel-element {
 		cursor: pointer;
 		user-select: none;
 		font-weight: bold;
+
+		.notes-title {
+			display: inline-flex;
+			align-items: center;
+			gap: 4px;
+		}
+
+		.notes-info-icon {
+			display: inline-flex;
+			align-items: center;
+			justify-content: center;
+			width: 14px;
+			height: 14px;
+			border-radius: 50%;
+			background-color: @primary;
+			color: white;
+			font-size: 10px;
+			font-weight: bold;
+			font-style: italic;
+			line-height: 1;
+			user-select: none;
+		}
 	}
 
 	.notes-collapse-icon {
@@ -419,16 +468,29 @@ script-panel-element + script-panel-element {
 .tooltip-container {
 	z-index: 99999999999999;
 	margin: 12px 0px 0px 12px;
-	padding: 4px;
-	color: black;
-	background: #f0f0f0;
-	box-shadow: 0px 0px 4px #949494;
+	padding: 6px 10px;
+	color: white;
+	background: rgba(0, 0, 0);
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 	position: fixed;
 	white-space: normal;
-	max-width: 200px;
+	width: fit-content;
+	max-width: 400px;
 	height: auto;
 	border-radius: 6px;
 	line-height: 18px;
+
+	/** 气泡尾巴（顶部，指向上方悬浮元素） */
+	&::before {
+		content: '';
+		position: absolute;
+		top: -4px;
+		left: 10px;
+		width: 8px;
+		height: 8px;
+		background: inherit;
+		transform: rotate(45deg);
+	}
 }
 
 .configs-container {
@@ -522,6 +584,9 @@ script-panel-element + script-panel-element {
 
 				input[type='button'] {
 					.base-style-button();
+					// 宽度根据文本自适应
+					width: auto;
+					padding: 4px 12px;
 				}
 
 				/** check box 的样式 */
@@ -529,7 +594,7 @@ script-panel-element + script-panel-element {
 					.base-style-switch();
 				}
 
-				input:not([type='checkbox'], [type='radio']),
+				input:not([type='checkbox'], [type='radio'], [type='button']),
 				textarea,
 				select {
 					width: -webkit-fill-available;
@@ -539,7 +604,7 @@ script-panel-element + script-panel-element {
 				input[type='checkbox'],
 				input[type='radio'],
 				input[type='range'] {
-					accent-color: #0e8ee2;
+					accent-color: @primary;
 				}
 			}
 
@@ -548,6 +613,42 @@ script-panel-element + script-panel-element {
 				border-radius: 8px;
 				color: black;
 				float: right;
+			}
+
+			/** 前后插槽容器：仅作布局，抵消 > * 规则带来的底色与圆角 */
+			.config-wrapper > .config-provider-container {
+				display: inline-flex;
+				align-items: center;
+				gap: 6px;
+				background-color: transparent;
+				border-radius: 0px;
+				padding: 0px;
+
+				.config-prefix,
+				.config-suffix {
+					display: inline-flex;
+					align-items: center;
+					white-space: nowrap;
+					line-height: 20px;
+					flex-shrink: 0;
+				}
+
+				/** 插槽中的按钮：去除下外边距保持垂直居中，禁止收缩 */
+				.base-style-button,
+				.base-style-button-secondary {
+					margin-bottom: 0px;
+					white-space: nowrap;
+					flex-shrink: 0;
+				}
+
+				/** 容器内的表单控件：恢复独立控件底色 */
+				> input:not([type='checkbox'], [type='radio'], [type='button']),
+				> select,
+				> textarea {
+					width: auto;
+					min-width: 60px;
+					background-color: @form-control-bg;
+				}
 			}
 			.config-wrapper > *:disabled {
 				cursor: not-allowed;
@@ -606,9 +707,10 @@ script-panel-element + script-panel-element {
 		}
 
 		&.info {
-			background-color: #c9e7ff;
-			color: #004d95;
-			border: 1px solid #1890ff69;
+			// 使用 mix 生成不透明实色，避免 fade 半透明背景/边框透出页面内容
+			background-color: mix(@primary, #ffffff, 20%);
+			color: darken(@primary, 30%);
+			border: 1px solid mix(@primary, #ffffff, 40%);
 		}
 
 		&.success {
@@ -759,270 +861,9 @@ container-element.minimize {
 }
 
 container-element.minimize header-element {
-	padding: 8px;
 	border-radius: 12px;
+	padding-bottom: 8px;
 	box-shadow: 0px 0px 24px -12px black;
-}
-
-.user-guide {
-	& > li {
-		padding: 4px 0px;
-	}
-}
-
-.search-infos-num {
-	width: 26px;
-	margin: 2px;
-	height: 20px;
-	border-radius: 4px;
-	display: inline-block;
-	background-color: white;
-	text-align: center;
-	cursor: pointer;
-	border: 1px solid #b6b6b6;
-
-	&.requested {
-		border: 1px solid #63b4ff;
-		color: #63b4ff;
-	}
-
-	&.active {
-		background-color: #127de1 !important;
-		color: white;
-	}
-
-	&.error {
-		border: 1px solid #ff8789ed;
-		background-color: #ff6b6ded;
-		color: white;
-	}
-
-	&.finish {
-		background-color: #63b4ff;
-		border: 1px solid #63b4ff;
-		color: white;
-	}
-}
-
-search-infos-element {
-	display: block;
-	overflow: auto;
-
-	.search-result {
-		margin-bottom: 12px;
-		padding-left: 12px;
-
-		.question {
-			font-weight: bold;
-			max-height: 200px;
-			overflow: auto;
-		}
-		.answer {
-			color: #7c7c7c;
-
-			code {
-				// background-color: #f3f3f3;
-				border-bottom: 1px solid #dcdcdc;
-				padding: 2px 0px;
-				border-radius: 2px;
-				margin: 4px;
-				line-height: 22px;
-			}
-
-			code + code {
-				margin-left: 4px;
-			}
-		}
-
-		.search-result-answer-tag {
-			padding: 2px 6px;
-			border-radius: 2px;
-			font-size: 12px;
-			cursor: pointer;
-			margin-right: 6px;
-		}
-		.search-result-answer-tag + .search-result-answer-tag {
-			margin-left: 4px;
-		}
-
-		.search-result-answer-tag.blue {
-			background-color: #e6f7ff;
-			border: 1px solid #91d5ff;
-			color: #1890ff;
-		}
-
-		.search-result-answer-tag.green {
-			background-color: #f6ffed;
-			border: 1px solid #b7eb8f;
-			color: #52c41a;
-		}
-
-		.search-result-answer-tag.gray {
-			background-color: #fafafa;
-			border: 1px solid #d9d9d9;
-			color: #595959;
-		}
-
-		.search-result-answer-tag.red {
-			background-color: #fff1f0;
-			border: 1px solid #ffa39e;
-			color: #ff4d4f;
-		}
-
-		.search-result-answer-tag.yellow {
-			background-color: #fffbe6;
-			border: 1px solid #ffe58f;
-			color: #faad14;
-		}
-	}
-
-	.search-result-question-type {
-		background-color: #e6f7ff;
-		border: 1px solid #91d5ff;
-		color: #1890ff;
-		margin-right: 8px;
-		padding: 0px 4px;
-		border-radius: 4px;
-	}
-
-	.error {
-		color: #ff6b6ded;
-		display: inline-block;
-		padding-left: 12px;
-	}
-}
-
-.copy,
-.question-title-extra-btn {
-	margin-left: 4px;
-	padding: 2px 4px;
-	border-radius: 2px;
-	box-shadow: 0 0 4px #b1b1b1;
-	cursor: pointer !important;
-	font-weight: normal;
-	font-size: 12px;
-}
-
-.work-result-question-container {
-	position: absolute;
-	width: 400px;
-	left: -100%;
-	top: 0px;
-	background: white;
-	border: 1px solid #cbcbcb;
-	border-radius: 4px;
-	box-shadow: 0px 0px 12px #d1cfcf;
-	padding: 12px;
-
-	.close-search-result {
-		font-size: 12px;
-		margin-left: 8px;
-		text-decoration: underline;
-		color: gray;
-		cursor: pointer;
-	}
-}
-
-.work-result-list {
-	max-height: 400px;
-	overflow: auto;
-	margin: 12px 0px;
-	padding: 6px;
-	border: 1px solid #e1e1e1;
-	border-radius: 4px;
-}
-
-.search-info-title {
-	border: 1px solid #e1e1e1;
-	border-radius: 4px;
-	padding: 8px 12px;
-	margin-bottom: 12px;
-	line-height: 20px;
-	overflow: auto;
-}
-
-.search-info-title .title-content {
-	max-height: 200px;
-	overflow: auto;
-}
-
-.search-info-details {
-	margin-left: 4px;
-}
-
-.console {
-	max-height: 300px;
-	max-width: 400px;
-	overflow: auto;
-	background-color: #292929;
-	padding: 12px 6px;
-	color: #ececec;
-	font-size: 12px;
-
-	.item {
-		padding: 3px 0px;
-		border-radius: 2px;
-
-		.time {
-			color: #757575;
-		}
-
-		.info {
-			background-color: #2196f3a3;
-		}
-
-		.warn {
-			background-color: #ffc107db;
-		}
-
-		.error {
-			background-color: #f36c71cc;
-		}
-
-		.debug,
-		.log {
-			background-color: #9e9e9ec4;
-		}
-	}
-
-	// 文字选中样式
-	& *::selection {
-		background-color: #ffffff6b;
-	}
-}
-
-.markdown {
-	max-width: 400px;
-	max-height: 50vh;
-	overflow: auto;
-
-	code {
-		padding: 2px 4px;
-		background-color: #f0f0f0;
-		border-radius: 6px;
-		font-size: 12px;
-	}
-
-	blockquote {
-		padding: 4px 4px 4px 12px;
-		margin: 0px;
-		color: #b5b5b5;
-		border-left: #ababab 2px solid;
-
-		p {
-			margin: 0px;
-		}
-	}
-
-	h1,
-	h2,
-	h3,
-	h4,
-	h5,
-	h6,
-	p {
-		margin: 8px 0px;
-	}
 }
 
 .dropdown {
@@ -1031,7 +872,7 @@ search-infos-element {
 
 	&.active {
 		.dropdown-trigger-element {
-			color: #1890ff;
+			color: @primary;
 		}
 	}
 }
@@ -1077,8 +918,8 @@ search-infos-element {
 	}
 
 	.dropdown-option.active {
-		background-color: #1890ff1a;
-		color: #1890ff;
+		background-color: @primary-soft;
+		color: @primary;
 		font-weight: 500;
 	}
 }
@@ -1093,31 +934,6 @@ search-infos-element {
 	}
 
 	animation: fade-in 0.5s;
-}
-
-.alert-info-wrapper {
-	margin-bottom: 8px;
-
-	.result-info {
-		padding: 12px;
-		text-align: center;
-		border-radius: 6px;
-	}
-
-	.unresolved {
-		color: #a1a1a1;
-		background-color: #f7f7f7;
-	}
-
-	.no-answer {
-		color: #a1a1a1;
-		background-color: #f7f7f7;
-	}
-
-	.error {
-		color: #ff4d4f;
-		background-color: #fff1f0;
-	}
 }
 
 message-element {
