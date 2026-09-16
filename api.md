@@ -126,7 +126,7 @@ async function start(startConfig: StartConfig): Promise<void>
 |------|------|------|
 | `projects` | `Project[]` | 工程列表 |
 | `mountElement?` | `HTMLElement \| Element` | 悬浮窗挂载点，默认 `document.body` |
-| `renderConfig?` | `{ renderScript, title, styles, defaultPanelName }` | UI 渲染配置；省略则不渲染 UI |
+| `renderConfig?` | `{ renderScript, title, styles, defaultPanelName }` | UI 渲染配置；省略则不渲染 UI。`title` 支持文本、HTML 字符串或 `HTMLElement` |
 | `onRender?` | `() => CustomWindow` | 自定义窗口创建 |
 
 `renderConfig.renderScript` 通常由 [`createRenderScript()`](src/render/render.ts#L9) 创建，负责窗口自身设置（位置、字体、显隐等）。
@@ -252,6 +252,8 @@ interface Config<T extends keyof ConfigTagMap = 'input', V = any>
 | `sync?` | `boolean` | 本地修改后同步回元素 |
 | `separator?` | `string` | 在上方插入分隔符 |
 | `showIf?` | `string \| [string, (curr,pre,store)=>boolean]` | 条件显隐 |
+| `prefixSlot?` | `string \| HTMLElement \| ((this: Script, cfg) => string \| HTMLElement)` | 前置插槽，插入到输入元素之前；函数形式在渲染时懒调用，`this` 绑定所属 `Script` 实例（可用 `this.cfg` / `this.methods` 等），参数为 `cfg` |
+| `suffixSlot?` | 同上 | 后置插槽，插入到输入元素之后 |
 | `onload?` | `(this, el) => void` | 元素加载回调 |
 | `extra?` | `any` | 自定义附加数据 |
 
