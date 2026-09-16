@@ -187,6 +187,9 @@ container-element {
 	z-index: 99999;
 	text-align: left;
 	min-width: 300px;
+	// 固定定位下 shrink-to-fit 宽度会受 right 边缘可用空间约束，
+	// 导致移到屏幕右边缘时标题栏文本被挤压，这里显式按内容宽度渲染，允许超出屏幕
+	width: max-content;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	color: #636363;

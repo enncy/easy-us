@@ -185,6 +185,7 @@ container-element {
   z-index: 99999;
   text-align: left;
   min-width: 300px;
+  width: max-content;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #636363;

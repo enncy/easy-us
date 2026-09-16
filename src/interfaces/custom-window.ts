@@ -217,6 +217,9 @@ export class CustomWindow {
 		};
 
 		// 监听快捷键
+		const switchVisual = () => {
+			this.setVisual(config.store.getVisual() === 'hidden' ? 'normal' : 'hidden');
+		};
 		window.addEventListener(
 			'keydown',
 			(e) => {
@@ -224,11 +227,15 @@ export class CustomWindow {
 					e.stopPropagation();
 					e.preventDefault();
 
-					this.setVisual(config.store.getVisual() === 'hidden' ? 'normal' : 'hidden');
+					switchVisual();
 				}
 			},
 			{ capture: true }
 		);
+		// 接收来自 iframe 的快捷键切换请求（iframe 内按键无法被顶层监听捕获，由 start.ts 转发）
+		cors.on('switch-visual', () => {
+			switchVisual();
+		});
 
 		// 首先处理窗口状态，防止下方的IO速度过慢可能导致窗口闪烁
 		handleVisible();

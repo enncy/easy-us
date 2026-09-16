@@ -1,5 +1,5 @@
 /* global */
-import { Script } from '../interfaces';
+import { cors, Script } from '../interfaces';
 import { CustomWindow } from '../interfaces/custom-window';
 import { Project } from '../interfaces/project';
 import { $ } from './common';
@@ -203,6 +203,22 @@ async function mount(startConfig: StartConfig) {
 		return;
 	}
 
+	// 顶层 window 的快捷键监听无法接收跨域 iframe 内的按键，
+	// 在 iframe 中监听 ctrl+o 并 preventDefault 覆盖浏览器默认行为，通过 cors 转发到顶层切换窗口显隐
+	if (self !== top && startConfig.renderConfig) {
+		window.addEventListener(
+			'keydown',
+			(e) => {
+				if (e.ctrlKey && e.key === 'o') {
+					e.stopPropagation();
+					e.preventDefault();
+					cors.emit('switch-visual', []);
+				}
+			},
+			{ capture: true }
+		);
+	}
+
 	if (self === top) {
 		const { projects, renderConfig } = startConfig;
 		if (typeof renderConfig.renderScript === 'undefined') {
@@ -224,7 +240,7 @@ async function mount(startConfig: StartConfig) {
 				fontsize: RenderScript.cfg.fontsize,
 				switchPoint: RenderScript.cfg.switchPoint,
 				switchKey: 'o'
-			},
+				},
 			store: {
 				getPosition: () => {
 					return { x: RenderScript.cfg.x, y: RenderScript.cfg.y };
