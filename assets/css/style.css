@@ -1119,6 +1119,7 @@ message-element.message-viewport-top {
   z-index: 99999;
   max-width: 90vw;
   animation: message-viewport-top-slide-down 0.25s ease;
+  transition: top 0.2s ease;
 }
 @keyframes message-viewport-top-slide-down {
   from {

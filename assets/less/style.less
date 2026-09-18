@@ -1034,6 +1034,8 @@ message-element.message-viewport-top {
 	z-index: 99999;
 	max-width: 90vw;
 	animation: message-viewport-top-slide-down 0.25s ease;
+	// 堆叠重排（top 由 JS 累加计算）时的平滑过渡
+	transition: top 0.2s ease;
 }
 
 @keyframes message-viewport-top-slide-down {

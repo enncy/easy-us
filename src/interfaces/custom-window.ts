@@ -156,6 +156,9 @@ export class CustomWindow {
 		// 创建样式元素
 		this.container.append(...styles, this.messageContainer);
 
+		// 视口顶部固定气泡被移除时（定时关闭/手动关闭），重新布局剩余气泡的堆叠位置
+		new MutationObserver(() => this.layoutViewportTopMessages()).observe(this.messageContainer, { childList: true });
+
 		/** 处理面板位置 */
 		const handlePosition = () => {
 			const pos = config.store.getPosition();
@@ -459,9 +462,26 @@ export class CustomWindow {
 				rect.left < 0 || rect.top < 0 || rect.right > window.innerWidth || rect.bottom > window.innerHeight;
 			if (outOfViewport) {
 				message.classList.add('message-viewport-top');
+				this.layoutViewportTopMessages();
 			}
 		});
 		return message;
+	}
+
+	/**
+	 * 视口顶部固定气泡的堆叠布局：
+	 * 按创建顺序自上而下累加高度，避免多个 message-viewport-top 气泡重叠在一起
+	 */
+	private layoutViewportTopMessages() {
+		/** 顶部起始位置（px） */
+		let top = 12;
+		/** 气泡之间的间隙（px） */
+		const gap = 8;
+		const messages = this.messageContainer.querySelectorAll<HTMLElement>('message-element.message-viewport-top');
+		for (const el of Array.from(messages)) {
+			el.style.top = top + 'px';
+			top += el.offsetHeight + gap;
+		}
 	}
 
 	/**
