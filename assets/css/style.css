@@ -1110,7 +1110,7 @@ modal-element {
 .checked .checkbox-label::before {
   content: '🔼';
 }
-/** 气泡自适应：不可视气泡固定显示在屏幕正上方 */
+/** 气泡自适应：不可视气泡固定显示在屏幕正上方（从顶部向下滑出自身高度） */
 message-element.message-viewport-top {
   position: fixed;
   top: 12px;
@@ -1118,4 +1118,15 @@ message-element.message-viewport-top {
   transform: translateX(-50%);
   z-index: 99999;
   max-width: 90vw;
+  animation: message-viewport-top-slide-down 0.25s ease;
+}
+@keyframes message-viewport-top-slide-down {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
 }
