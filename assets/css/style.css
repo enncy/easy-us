@@ -733,6 +733,7 @@ script-panel-element + script-panel-element {
   width: 100%;
   transform: translate(-50%, 0px);
   min-width: 300px;
+  z-index: 2;
 }
 .message-container message-element {
   display: flex;

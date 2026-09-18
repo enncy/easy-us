@@ -671,6 +671,9 @@ script-panel-element + script-panel-element {
 	width: 100%;
 	transform: translate(-50%, 0px);
 	min-width: 300px;
+	// 需高于标题栏激活 TAB 的 ::before（z-index:1），
+	// 否则面板贴顶时气泡会被 TAB 背景盖住
+	z-index: 2;
 
 	// 提示内容
 	message-element {
