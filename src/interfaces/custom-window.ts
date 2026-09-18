@@ -451,6 +451,16 @@ export class CustomWindow {
 		}
 		const message = h('message-element', { type, ...attrs });
 		this.messageContainer.append(message);
+		// 气泡自适应显示：检测气泡是否完整处于窗口可视区域内，
+		// 不可视或部分被遮挡时（如面板吸附在屏幕边缘），固定显示在屏幕正上方
+		requestAnimationFrame(() => {
+			const rect = message.getBoundingClientRect();
+			const outOfViewport =
+				rect.left < 0 || rect.top < 0 || rect.right > window.innerWidth || rect.bottom > window.innerHeight;
+			if (outOfViewport) {
+				message.classList.add('message-viewport-top');
+			}
+		});
 		return message;
 	}
 

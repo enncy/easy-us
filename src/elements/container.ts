@@ -22,7 +22,7 @@ export class ContainerElement extends IElement {
 		this.addEventListener('touchmove', stopScrollPropagation);
 
 		$.onresize(this, (cont) => {
-			cont.body.style.maxHeight = window.innerHeight - this.header.clientHeight - 100 + 'px';
+			cont.body.style.maxHeight = window.innerHeight - this.header.clientHeight - 64 + 'px';
 			cont.body.style.maxWidth = window.innerWidth - 50 + 'px';
 		});
 	}

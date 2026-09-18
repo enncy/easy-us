@@ -24,6 +24,17 @@ export interface PreventTextOptions {
 	onprevent?: (span: HTMLSpanElement) => void;
 }
 /**
+ * 获取页面 zoom 缩放比例。
+ * 平台脚本（如智慧树）会通过 html{zoom} 调整界面缩放，
+ * zoom 会同步缩放 position:fixed 的定位坐标，但鼠标事件 clientX/Y 为未缩放值，
+ * 定位 tooltip 等鼠标跟随元素时需要反向补偿，否则会错位。
+ */
+function getPageZoom(): number {
+	const zoom = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('zoom') || '1');
+	return Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
+}
+
+/**
  * 元素创建器
  */
 export const $ui = {
@@ -40,29 +51,32 @@ export const $ui = {
 
 		const onMouseMove = (e: MouseEvent) => {
 			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
-				$elements.tooltipContainer.style.top = e.y + 'px';
-				$elements.tooltipContainer.style.left = e.x + 'px';
+				const zoom = getPageZoom();
+				$elements.tooltipContainer.style.top = e.y / zoom + 'px';
+				$elements.tooltipContainer.style.left = e.x / zoom + 'px';
 			}
 		};
 		const onTouchMove = (e: TouchEvent) => {
 			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
+				const zoom = getPageZoom();
 				const touch = e.touches[0];
-				$elements.tooltipContainer.style.top = touch.clientY + 'px';
-				$elements.tooltipContainer.style.left = touch.clientX + 'px';
+				$elements.tooltipContainer.style.top = touch.clientY / zoom + 'px';
+				$elements.tooltipContainer.style.left = touch.clientX / zoom + 'px';
 			}
 		};
 		const showTitle = (e: MouseEvent | TouchEvent) => {
 			const dataTitle = target.getAttribute('data-title');
 			if ($elements.tooltipContainer) {
 				if (dataTitle) {
+					const zoom = getPageZoom();
 					$elements.tooltipContainer.innerHTML = dataTitle.split('\n').join('<br>') || '';
 					if (e instanceof MouseEvent) {
-						$elements.tooltipContainer.style.top = e.y + 'px';
-						$elements.tooltipContainer.style.left = e.x + 'px';
+						$elements.tooltipContainer.style.top = e.y / zoom + 'px';
+						$elements.tooltipContainer.style.left = e.x / zoom + 'px';
 					} else if (e instanceof TouchEvent) {
 						const touch = e.touches[0];
-						$elements.tooltipContainer.style.top = touch.clientY + 'px';
-						$elements.tooltipContainer.style.left = touch.clientX + 'px';
+						$elements.tooltipContainer.style.top = touch.clientY / zoom + 'px';
+						$elements.tooltipContainer.style.left = touch.clientX / zoom + 'px';
 					}
 					$elements.tooltipContainer.style.display = 'block';
 				} else {

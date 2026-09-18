@@ -1024,3 +1024,13 @@ modal-element {
 .checked .checkbox-label::before {
 	content: '🔼';
 }
+
+/** 气泡自适应：不可视气泡固定显示在屏幕正上方 */
+message-element.message-viewport-top {
+	position: fixed;
+	top: 12px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 99999;
+	max-width: 90vw;
+}
