@@ -93,7 +93,6 @@ hr {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
 }
 .base-style-button:active {
@@ -133,7 +132,6 @@ hr {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
   color: #606266;
   background-color: white;
@@ -220,7 +218,6 @@ header-element .extra-menu-bar .script-panel-link {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
   color: #606266;
   background-color: white;
@@ -608,7 +605,6 @@ script-panel-element + script-panel-element {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
   width: auto;
   padding: 4px 12px;
@@ -854,7 +850,6 @@ modal-element .modal-cancel-button {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
   color: gray;
   background-color: white;
@@ -897,7 +892,6 @@ modal-element .modal-confirm-button {
   border: 1px solid #2b67ff;
   color: white;
   cursor: pointer !important;
-  margin-bottom: 4px;
   transition: all 0.2s ease;
 }
 modal-element .modal-confirm-button:active {
