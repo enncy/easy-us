@@ -7,6 +7,11 @@ export class DropdownElement extends IElement {
 	/** 下拉框内容 */
 	content: HTMLDivElement = h('div', { className: 'dropdown-content' });
 	trigger: 'hover' | 'click' = 'hover';
+	/**
+	 * 悬浮模式的隐藏延迟（毫秒）。
+	 * 仅需覆盖触发元素与内容区之间小间隙的跨越时间，过大会导致下拉框停留过久。
+	 */
+	hideDelay: number = 50;
 	/** 文档点击监听器（click 触发模式下用于点击外部区域时隐藏） */
 	private documentClickHandler: ((e: MouseEvent) => void) | undefined;
 
@@ -45,7 +50,7 @@ export class DropdownElement extends IElement {
 				hideTimer = setTimeout(() => {
 					this.content.classList.remove('show');
 					hideTimer = undefined;
-				}, 120);
+				}, this.hideDelay);
 			};
 			// 使用属性赋值（而非 addEventListener），避免元素被反复插入文档时重复绑定
 			this.triggerElement.onmouseenter = show;

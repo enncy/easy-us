@@ -887,7 +887,6 @@ container-element.minimize header-element {
 }
 
 .dropdown-content {
-	display: none;
 	position: absolute;
 	background-color: #ffffff;
 	overflow: auto;
@@ -899,9 +898,23 @@ container-element.minimize header-element {
 	border-radius: 12px;
 	padding: 4px;
 	min-width: 120px;
+	/** 下拉展开/收起动画：透明度 + 下滑 + 轻微缩放，让用户感知这是一个下拉框 */
+	display: block;
+	visibility: hidden;
+	opacity: 0;
+	transform: translateY(-6px) scale(0.98);
+	transform-origin: top center;
+	pointer-events: none;
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease,
+		visibility 0.15s;
 
 	&.show {
-		display: block;
+		visibility: visible;
+		opacity: 1;
+		transform: translateY(0) scale(1);
+		pointer-events: auto;
 	}
 }
 
