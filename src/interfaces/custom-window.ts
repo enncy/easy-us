@@ -418,6 +418,22 @@ export class CustomWindow {
 	}
 
 	/**
+	 * 刷新菜单栏与面板渲染（脚本页显隐状态变化后调用）。
+	 * 如果当前显示的脚本已被隐藏，则自动切换到第一个可见的脚本面板。
+	 */
+	async refreshPanel() {
+		const urls = this.defaults.urls((await this.config.store.getRenderURLs()) || [location.href]);
+		let currentPanelName = this.defaults.panelName(await this.config.store.getCurrentPanelName());
+		// 当前面板脚本已被隐藏时，切换到第一个可见的脚本
+		const visibleScripts = $.getMatchedScripts(this.projects, urls).filter((s) => !s.hideInPanel);
+		const isCurrentVisible = visibleScripts.some((s) => isCurrentPanel(s.projectName, s, currentPanelName));
+		if (!isCurrentVisible && visibleScripts.length > 0) {
+			currentPanelName = visibleScripts[0].fullName();
+		}
+		await this.rerender(urls, currentPanelName);
+	}
+
+	/**
 	 * 将当前的脚本置顶
 	 * @param script 脚本
 	 */

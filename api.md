@@ -150,7 +150,7 @@ class Script<C extends ScriptConfigs, M extends ScriptMethods = ScriptMethods>
 | `matches` | `(string \| RegExp)[] \| [string, string\|RegExp][]` | 匹配链接 |
 | `excludes?` | 同上 | 排除链接 |
 | `configs?` | `ScriptConfigsProvider<C>` | 配置项对象或工厂函数 |
-| `hideInPanel?` | `boolean` | 后台脚本，不显示面板 |
+| `hideInPanel?` | `boolean` | 后台脚本，不显示面板；可后续通过 `showPanel()` / `togglePanel()` 切换 |
 | `priority?` | `number` | 运行优先级，默认 0，大者优先 |
 | `notes?` | `string[]` | 脚本提示（已弃用，建议用 `configs.notes`） |
 
@@ -191,6 +191,14 @@ script.onConfigChange('count', (curr, pre, remote) => { ... });
 script.offConfigChange(listener);
 // 全路径名
 script.fullName(); // => "projectName-name"
+
+// 脚本页显隐控制（菜单栏下拉框与面板）
+script.hidePanel();        // 隐藏
+script.showPanel();        // 显示
+script.togglePanel();      // 切换
+script.isPanelHidden();    // 查询当前状态
+// 状态字段：script.hideInPanel（boolean）
+// 调用后自动刷新窗口渲染；若当前显示的脚本被隐藏，自动切换到第一个可见脚本
 ```
 
 `methods` 工厂示例：

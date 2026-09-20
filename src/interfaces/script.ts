@@ -3,7 +3,7 @@
 import { HeaderElement } from '../elements/header';
 import { ScriptPanelElement } from '../elements/script.panel';
 import { $ } from '../utils/common';
-import { StartConfig } from '../utils/start';
+import { $win, StartConfig } from '../utils/start';
 import { $store } from '../utils/store';
 import { CommonEventEmitter } from './common';
 import { Config } from './config';
@@ -23,7 +23,7 @@ export interface ScriptOptions<C extends Record<string, Config>> {
 	notes?: string[];
 	/** 脚本配置 */
 	configs?: ScriptConfigsProvider<C>;
-	/** 不显示脚本页 */
+	/** 不显示脚本页（后台脚本），可后续通过 showPanel() / togglePanel() 切换 */
 	hideInPanel?: boolean;
 	/** 运行优先级 */
 	priority?: number;
@@ -111,7 +111,7 @@ export class Script<
 	excludes?: (string | RegExp)[] | [string, string | RegExp][] = [];
 	/** 唯一命名空间，用于避免 config 重名 */
 	namespace?: string;
-	/** 后台脚本（不提供管理页面） */
+	/** 后台脚本（不提供管理页面），为 true 时不在菜单栏下拉框与面板中显示 */
 	hideInPanel?: boolean;
 	/** 通过 configs 映射并经过解析后的配置对象 */
 	cfg: { [K in keyof C]: C[K]['defaultValue'] } & { notes?: string } = {} as any;
@@ -209,6 +209,40 @@ export class Script<
 	 */
 	public fullName() {
 		return this.projectName ? `${this.projectName}-${this.name}` : this.name;
+	}
+
+	/**
+	 * 隐藏脚本页（菜单栏下拉框与面板中不再显示）
+	 */
+	hidePanel() {
+		this.setPanelHidden(true);
+	}
+
+	/**
+	 * 显示脚本页（菜单栏下拉框与面板中恢复显示）
+	 */
+	showPanel() {
+		this.setPanelHidden(false);
+	}
+
+	/**
+	 * 切换脚本页显隐状态
+	 */
+	togglePanel() {
+		this.setPanelHidden(!this.hideInPanel);
+	}
+
+	/**
+	 * 当前脚本页是否处于隐藏状态
+	 */
+	isPanelHidden() {
+		return !!this.hideInPanel;
+	}
+
+	private setPanelHidden(hidden: boolean) {
+		this.hideInPanel = hidden;
+		// 刷新菜单栏与面板渲染
+		$win?.refreshPanel();
 	}
 
 	private errorHandler(func?: Function) {
