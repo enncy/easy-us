@@ -114,6 +114,10 @@ export class CustomWindow {
 
 	/** 消息内容元素 */
 	messageContainer = h('div', { className: 'message-container' });
+	/** 菜单栏（可拖动区域），持久化元素以便绑定 tooltip 与拖动，重渲染时仅替换其子元素 */
+	menuBar = $ui.tooltip(
+		h('div', { className: 'header-menu-bar', title: '菜单栏-可拖动区域', style: { display: 'flex', width: '100%' } })
+	);
 	/** 额外的菜单栏 */
 	extraMenuBar = h('div', { className: 'extra-menu-bar' });
 
@@ -177,8 +181,9 @@ export class CustomWindow {
 				config.store.setPosition(this.container.offsetLeft, this.container.offsetTop);
 			};
 
-			enableElementDraggable(this.container.header, this.container, positionHandler);
-			enableElementTouchDraggable(this.container.header, this.container, positionHandler);
+			// 仅菜单栏区域可拖动
+			enableElementDraggable(this.menuBar, this.container, positionHandler);
+			enableElementTouchDraggable(this.menuBar, this.container, positionHandler);
 		};
 
 		/** 处理面板可视状态 */
@@ -349,13 +354,11 @@ export class CustomWindow {
 		this.container.header.visualSwitcher = visualSwitcher;
 
 		this.container.header.replaceChildren();
+		// menuBar 为持久元素，仅替换其子元素，保留 tooltip 与拖动绑定
+		this.menuBar.replaceChildren(profile, ...scriptDropdowns, this.container.header.visualSwitcher || '');
 		this.container.header.append(
 			h('div', { style: { width: '100%' } }, [
-				h('div', { className: 'header-menu-bar', style: { display: 'flex', width: '100%' } }, [
-					profile,
-					...scriptDropdowns,
-					this.container.header.visualSwitcher || ''
-				]),
+				this.menuBar,
 				h('div', { style: { display: 'flex', width: '100%' } }, [this.extraMenuBar])
 			])
 		);
