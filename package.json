@@ -1,6 +1,6 @@
 {
 	"name": "easy-us",
-	"version": "1.0.9",
+	"version": "1.0.10",
 	"description": "easy user-script framework",
 	"main": "./lib/index.js",
 	"types": "./lib/index.d.ts",
