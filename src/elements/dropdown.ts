@@ -55,6 +55,7 @@ export class DropdownElement extends IElement {
 			// 使用属性赋值（而非 addEventListener），避免元素被反复插入文档时重复绑定
 			this.triggerElement.onmouseenter = show;
 			this.triggerElement.onmouseleave = hide;
+			// tooltip 已由 document mouseover 兜底隐藏，无需手动处理
 			this.content.onmouseenter = show;
 			this.content.onmouseleave = hide;
 		}

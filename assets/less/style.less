@@ -469,7 +469,6 @@ script-panel-element + script-panel-element {
 
 .tooltip-container {
 	z-index: 99999999999999;
-	margin: 12px 0px 0px 12px;
 	padding: 6px 10px;
 	color: white;
 	background: rgba(0, 0, 0);
@@ -481,17 +480,58 @@ script-panel-element + script-panel-element {
 	height: auto;
 	border-radius: 6px;
 	line-height: 18px;
+	touch-action: manipulation;
+	/** 展开/收起动画：透明度 + 位移，方向随放置位置翻转 */
+	visibility: hidden;
+	opacity: 0;
+	pointer-events: none;
+	transition:
+		opacity 0.15s ease,
+		transform 0.15s ease,
+		visibility 0.15s;
 
-	/** 气泡尾巴（顶部，指向上方悬浮元素） */
+	&.tooltip-bottom {
+		transform: translateY(-4px);
+	}
+
+	&.tooltip-top {
+		transform: translateY(4px);
+	}
+
+	&.show {
+		visibility: visible;
+		opacity: 1;
+		transform: translateY(0);
+		pointer-events: auto;
+	}
+
+	/** 气泡尾巴：水平位置由 --tooltip-arrow-left 驱动，始终对准目标中心 */
 	&::before {
 		content: '';
 		position: absolute;
-		top: -4px;
-		left: 10px;
+		left: var(--tooltip-arrow-left, 10px);
 		width: 8px;
 		height: 8px;
 		background: inherit;
 		transform: rotate(45deg);
+	}
+
+	/** 气泡在目标下方，尾巴朝上 */
+	&.tooltip-bottom::before {
+		top: -4px;
+	}
+
+	/** 气泡在目标上方，尾巴朝下 */
+	&.tooltip-top::before {
+		bottom: -4px;
+	}
+}
+
+/** 移动端（粗指针）适配：限宽并加大内边距 */
+@media (pointer: coarse) {
+	.tooltip-container {
+		max-width: min(400px, 80vw);
+		padding: 8px 12px;
 	}
 }
 

@@ -39,7 +39,9 @@ function getPageZoom(): number {
  */
 export const $ui = {
 	/**
-	 * 启动元素提示气泡，根据元素 title 即时显示，（兼容手机端的提示）
+	 * 启动元素提示气泡，根据元素 title 即时显示（兼容移动端）。
+	 * 气泡锚定目标元素：根据内容大小与遮挡算法自适应出现位置（默认下方，空间不足自动翻转上方），
+	 * 不再跟随鼠标。
 	 * @param target
 	 */
 	tooltip<T extends HTMLElement>(target: T) {
@@ -49,61 +51,145 @@ export const $ui = {
 			target.removeAttribute('title');
 		}
 
-		const onMouseMove = (e: MouseEvent) => {
-			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
-				const zoom = getPageZoom();
-				$elements.tooltipContainer.style.top = e.y / zoom + 'px';
-				$elements.tooltipContainer.style.left = e.x / zoom + 'px';
+		const container = () => $elements.tooltipContainer as (HTMLDivElement & { __owner?: HTMLElement }) | undefined;
+		const isVisible = () => container()?.classList.contains('show');
+		/** 桌面端显示延迟（防抖） */
+		let showTimer: ReturnType<typeof setTimeout> | undefined;
+		/** 移动端自动隐藏定时器 */
+		let autoHideTimer: ReturnType<typeof setTimeout> | undefined;
+		/** 最近一次触摸时间（用于忽略触屏模拟的 mouseenter） */
+		let lastTouchTime = 0;
+
+		/** 计算气泡位置：锚定目标 + 遮挡翻转 + 视口钳制 */
+		const computePlacement = () => {
+			const el = container();
+			if (!el) {
+				return;
+			}
+			const zoom = getPageZoom();
+			const margin = 8;
+			const rect = target.getBoundingClientRect();
+			// 元素已渲染（visibility: hidden 不影响尺寸测量），直接读取内容实际宽高
+			const tipRect = el.getBoundingClientRect();
+			const vw = document.documentElement.clientWidth;
+			const vh = document.documentElement.clientHeight;
+
+			// 垂直方向：默认 bottom，下方空间不足且上方可容纳时翻转为 top
+			let placement: 'top' | 'bottom' = 'bottom';
+			if (rect.bottom + margin + tipRect.height > vh - margin && rect.top - margin - tipRect.height > margin) {
+				placement = 'top';
+			}
+			const top = placement === 'bottom' ? rect.bottom + margin : rect.top - margin - tipRect.height;
+
+			// 水平方向：居中于目标，越界时向视口内钳制
+			let left = rect.left + rect.width / 2 - tipRect.width / 2;
+			left = Math.max(margin, Math.min(left, vw - margin - tipRect.width));
+
+			// 箭头始终对准目标中心
+			const arrowLeft = Math.max(6, Math.min(rect.left + rect.width / 2 - left - 4, tipRect.width - 14));
+
+			el.classList.remove('tooltip-top', 'tooltip-bottom');
+			el.classList.add(placement === 'bottom' ? 'tooltip-bottom' : 'tooltip-top');
+			el.style.setProperty('--tooltip-arrow-left', arrowLeft + 'px');
+			el.style.top = top / zoom + 'px';
+			el.style.left = left / zoom + 'px';
+		};
+
+		const onScrollOrResize = () => {
+			// 目标已脱离文档时直接隐藏
+			if (!target.isConnected) {
+				hide();
+				return;
+			}
+			computePlacement();
+		};
+		// 兜底：鼠标落在目标子树以外时隐藏（覆盖目标后代为浮层、mouseleave 不触发的场景）
+		const onDocumentMouseOver = (e: Event) => {
+			if (!target.contains(e.target as Node)) {
+				hide();
 			}
 		};
-		const onTouchMove = (e: TouchEvent) => {
-			if ($elements.tooltipContainer && $elements.tooltipContainer.style.display !== 'none') {
-				const zoom = getPageZoom();
-				const touch = e.touches[0];
-				$elements.tooltipContainer.style.top = touch.clientY / zoom + 'px';
-				$elements.tooltipContainer.style.left = touch.clientX / zoom + 'px';
+		// 移动端：点按气泡与目标以外的区域时隐藏
+		const onDocumentTouchStart = (e: Event) => {
+			const el = container();
+			const path = e.composedPath();
+			if (!path.includes(target) && !(el && path.includes(el))) {
+				hide();
 			}
 		};
-		const showTitle = (e: MouseEvent | TouchEvent) => {
+
+		const bindWhileVisible = () => {
+			window.addEventListener('scroll', onScrollOrResize, true);
+			window.addEventListener('resize', onScrollOrResize);
+			document.addEventListener('mouseover', onDocumentMouseOver, true);
+			document.addEventListener('touchstart', onDocumentTouchStart, true);
+		};
+		const unbindWhileVisible = () => {
+			window.removeEventListener('scroll', onScrollOrResize, true);
+			window.removeEventListener('resize', onScrollOrResize);
+			document.removeEventListener('mouseover', onDocumentMouseOver, true);
+			document.removeEventListener('touchstart', onDocumentTouchStart, true);
+		};
+
+		const show = () => {
+			const el = container();
 			const dataTitle = target.getAttribute('data-title');
-			if ($elements.tooltipContainer) {
-				if (dataTitle) {
-					const zoom = getPageZoom();
-					$elements.tooltipContainer.innerHTML = dataTitle.split('\n').join('<br>') || '';
-					if (e instanceof MouseEvent) {
-						$elements.tooltipContainer.style.top = e.y / zoom + 'px';
-						$elements.tooltipContainer.style.left = e.x / zoom + 'px';
-					} else if (e instanceof TouchEvent) {
-						const touch = e.touches[0];
-						$elements.tooltipContainer.style.top = touch.clientY / zoom + 'px';
-						$elements.tooltipContainer.style.left = touch.clientX / zoom + 'px';
-					}
-					$elements.tooltipContainer.style.display = 'block';
-				} else {
-					$elements.tooltipContainer.style.display = 'none';
-				}
+			if (!el || !dataTitle) {
+				hide();
+				return;
 			}
-
-			window.addEventListener('mousemove', onMouseMove);
-			window.addEventListener('touchmove', onTouchMove);
+			el.innerHTML = dataTitle.split('\n').join('<br>') || '';
+			// 记录归属，仅所属目标可以关闭，避免共享气泡互相误关
+			el.__owner = target;
+			computePlacement();
+			// 强制 reflow，确保从隐藏态开始播放入场过渡动画
+			void el.offsetWidth;
+			el.classList.add('show');
+			bindWhileVisible();
 		};
-		const hideTitle = () => {
-			if ($elements.tooltipContainer) {
-				$elements.tooltipContainer.style.display = 'none';
+
+		function hide(owner?: HTMLElement) {
+			const el = container();
+			if (!el) {
+				return;
 			}
-			window.removeEventListener('mousemove', onMouseMove);
-			window.removeEventListener('touchmove', onTouchMove);
-		};
-		hideTitle();
-		target.addEventListener('mouseenter', showTitle as any);
-		target.addEventListener('click', showTitle as any);
-		target.addEventListener('mouseleave', hideTitle);
-		// 移动版适配
-		target.addEventListener('touchstart', showTitle as any);
-		target.addEventListener('touchend', hideTitle);
-		target.addEventListener('touchcancel', hideTitle);
+			// 指定 owner 时仅允许所属目标关闭
+			if (owner && el.__owner !== owner) {
+				return;
+			}
+			el.classList.remove('show');
+			el.__owner = undefined;
+			clearTimeout(autoHideTimer);
+			unbindWhileVisible();
+		}
 
-		target.addEventListener('blur', hideTitle);
+		// 桌面端：悬浮显示（100ms 防抖），移出隐藏
+		target.addEventListener('mouseenter', () => {
+			// 忽略触屏模拟的 mouseenter
+			if (Date.now() - lastTouchTime < 500) {
+				return;
+			}
+			clearTimeout(showTimer);
+			showTimer = setTimeout(show, 100);
+		});
+		target.addEventListener('mouseleave', () => {
+			clearTimeout(showTimer);
+			hide(target);
+		});
+		target.addEventListener('click', show);
+		target.addEventListener('blur', () => hide(target));
+
+		// 移动端：点按切换显隐，3s 自动隐藏，不再跟随手指
+		target.addEventListener('touchstart', () => {
+			lastTouchTime = Date.now();
+			clearTimeout(autoHideTimer);
+			if (isVisible() && container()?.__owner === target) {
+				hide(target);
+			} else {
+				show();
+				autoHideTimer = setTimeout(() => hide(target), 3000);
+			}
+		});
 
 		return target;
 	},
