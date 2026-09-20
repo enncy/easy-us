@@ -257,13 +257,19 @@ export function enableElementTouchDraggable(header: HTMLElement, target: HTMLEle
 		pos3 = touch.clientX;
 		pos4 = touch.clientY;
 		document.addEventListener('touchend', closeDragElement);
+		document.addEventListener('touchcancel', closeDragElement);
 		// call a function whenever the cursor moves:
-		document.addEventListener('touchmove', elementDrag);
+		// capture 阶段 + 非 passive 注册：
+		// 1. 避免 target 祖先元素（如容器）对 touchmove 的 stopPropagation 拦截导致拖动失效
+		// 2. 非 passive 才允许 preventDefault 阻止页面跟随滚动
+		document.addEventListener('touchmove', elementDrag, { capture: true, passive: false });
 	}
 
 	function elementDrag(e: TouchEvent) {
 		// 阻止冒泡
 		e.stopPropagation();
+		// 阻止页面跟随手指滚动
+		e.preventDefault();
 
 		e = e || window.event;
 		const touch = e.touches[0];
@@ -280,6 +286,7 @@ export function enableElementTouchDraggable(header: HTMLElement, target: HTMLEle
 		ondrag?.();
 		// stop moving when mouse button is released:
 		document.removeEventListener('touchend', closeDragElement);
-		document.removeEventListener('touchmove', elementDrag);
+		document.removeEventListener('touchcancel', closeDragElement);
+		document.removeEventListener('touchmove', elementDrag, { capture: true });
 	}
 }
