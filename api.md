@@ -384,9 +384,15 @@ await topAlert('hello');
 
 **位置**：[src/utils/ui.ts:29](src/utils/ui.ts#L29)
 
-#### `$ui.tooltip(target)`
+#### `$ui.tooltip(target, position?)`
 
-为元素绑定自定义提示气泡（基于 `title` 属性），兼容移动端。鼠标移动到子元素（如滑块 thumb）不会误隐藏。
+为元素绑定自定义提示气泡（基于 `title` 属性），锚定目标显示，兼容移动端。
+
+- `position?`: `TooltipPosition`，指定气泡优先显示位置，默认 `'bottom'`；指定方向空间不足时自动翻转兜底
+  - `'top' | 'bottom'`：气泡居中于目标上方/下方
+  - `'top-left' | 'top-right' | 'bottom-left' | 'bottom-right'`：气泡与目标左/右边缘对齐
+- 气泡根据内容大小与遮挡算法自适应位置，箭头始终对准目标中心
+- 示例：`$ui.tooltip(el, 'top')` // 上方居中；`$ui.tooltip(el, 'bottom-right')` // 下方右对齐
 
 #### `$ui.scriptPanel(script, store, opts?)`
 

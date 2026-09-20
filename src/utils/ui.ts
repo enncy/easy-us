@@ -34,6 +34,9 @@ function getPageZoom(): number {
 	return Number.isFinite(zoom) && zoom > 0 ? zoom : 1;
 }
 
+/** tooltip 气泡显示位置：top/bottom 为居中，top-left/top-right/bottom-left/bottom-right 为与目标左/右边缘对齐 */
+export type TooltipPosition = 'top' | 'top-left' | 'top-right' | 'bottom' | 'bottom-left' | 'bottom-right';
+
 /**
  * 元素创建器
  */
@@ -43,8 +46,9 @@ export const $ui = {
 	 * 气泡锚定目标元素：根据内容大小与遮挡算法自适应出现位置（默认下方，空间不足自动翻转上方），
 	 * 不再跟随鼠标。
 	 * @param target
+	 * @param position 指定气泡优先显示位置，默认 'bottom'；指定方向空间不足时仍自动翻转兜底
 	 */
-	tooltip<T extends HTMLElement>(target: T) {
+	tooltip<T extends HTMLElement>(target: T, position?: TooltipPosition) {
 		target.setAttribute('data-title', target.title);
 		// 油猴环境下，取消默认title，避免系统默认事件重复显示
 		if ($gm.isInGMContext()) {
@@ -74,15 +78,27 @@ export const $ui = {
 			const vw = document.documentElement.clientWidth;
 			const vh = document.documentElement.clientHeight;
 
-			// 垂直方向：默认 bottom，下方空间不足且上方可容纳时翻转为 top
-			let placement: 'top' | 'bottom' = 'bottom';
-			if (rect.bottom + margin + tipRect.height > vh - margin && rect.top - margin - tipRect.height > margin) {
-				placement = 'top';
+			// 垂直方向：优先使用指定位置（默认 bottom），空间不足时自动翻转兜底
+			let placement: 'top' | 'bottom' = position?.startsWith('top') ? 'top' : 'bottom';
+			const fits =
+				placement === 'bottom'
+					? rect.bottom + margin + tipRect.height <= vh - margin
+					: rect.top - margin - tipRect.height >= margin;
+			if (!fits) {
+				placement = placement === 'bottom' ? 'top' : 'bottom';
 			}
 			const top = placement === 'bottom' ? rect.bottom + margin : rect.top - margin - tipRect.height;
 
-			// 水平方向：居中于目标，越界时向视口内钳制
-			let left = rect.left + rect.width / 2 - tipRect.width / 2;
+			// 水平方向：center 居中于目标，left/right 与目标左/右边缘对齐，越界时向视口内钳制
+			const align = position?.endsWith('left') ? 'left' : position?.endsWith('right') ? 'right' : 'center';
+			let left: number;
+			if (align === 'left') {
+				left = rect.left;
+			} else if (align === 'right') {
+				left = rect.right - tipRect.width;
+			} else {
+				left = rect.left + rect.width / 2 - tipRect.width / 2;
+			}
 			left = Math.max(margin, Math.min(left, vw - margin - tipRect.width));
 
 			// 箭头始终对准目标中心

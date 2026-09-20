@@ -116,7 +116,9 @@ export class CustomWindow {
 	messageContainer = h('div', { className: 'message-container' });
 	/** 菜单栏（可拖动区域），持久化元素以便绑定 tooltip 与拖动，重渲染时仅替换其子元素 */
 	menuBar = $ui.tooltip(
-		h('div', { className: 'header-menu-bar', title: '菜单栏-可拖动区域', style: { display: 'flex', width: '100%' } })
+		h('div', { className: 'header-menu-bar', title: '菜单栏-可拖动区域', style: { display: 'flex', width: '100%' } }),
+		// 提示显示在上方，防止挡住下拉框
+		'top'
 	);
 	/** 额外的菜单栏 */
 	extraMenuBar = h('div', { className: 'extra-menu-bar' });
