@@ -164,7 +164,7 @@ export class Script<
 		onrender?: (this: Script<E, C, M>, elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
 		onhistorychange?: (this: Script<E, C, M>, type: 'push' | 'replace', ...args: any[]) => any;
 		onhistorychanged?: (this: Script<E, C, M>, type: 'pushed' | 'replaced', ...args: any[]) => any;
-		methods?: (this: Script<E, C, M>) => M;
+		methods?: (this: Script<E, C>) => M;
 	}) {
 		super();
 		this.name = name;
