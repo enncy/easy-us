@@ -38,7 +38,8 @@ export type ScriptConfigs = {
 
 export type ScriptMethods = Record<string, (...args: any[]) => any>;
 
-type ScriptEvent = {
+/** 脚本事件表，可通过 ScriptEvent & { 'custom-event': (...args) => any } 交叉扩展自定义事件 */
+export type ScriptEvent = {
 	/** 在脚本加载时立即运行的事件 */
 	start: (...args: any[]) => any;
 	/** 在页面初始化完成时（元素可被访问）时运行的事件 */
@@ -90,9 +91,10 @@ export class BaseScript<E extends ScriptEvent = ScriptEvent> extends CommonEvent
  * 脚本
  */
 export class Script<
+	E extends Record<string, (...args: any[]) => any> = {},
 	C extends ScriptConfigs = ScriptConfigs,
 	M extends ScriptMethods = ScriptMethods
-> extends BaseScript<ScriptEvent> {
+> extends BaseScript<ScriptEvent & E> {
 	/** 未经处理的 configs 原对象 */
 	private _configs?: ScriptConfigsProvider<C>;
 	/** 存储已经处理过的 configs 对象，避免重复调用方法 */
@@ -154,15 +156,15 @@ export class Script<
 		methods,
 		priority
 	}: ScriptOptions<C> & {
-		onstart?: (this: Script<C, M>, ...args: any) => any;
-		onactive?: (this: Script<C, M>, ...args: any) => any;
-		oncomplete?: (this: Script<C, M>, ...args: any) => any;
-		onhashchange?: (this: Script<C, M>, ...args: any) => any;
-		onbeforeunload?: (this: Script<C, M>, ...args: any) => any;
-		onrender?: (this: Script<C, M>, elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
-		onhistorychange?: (this: Script<C, M>, type: 'push' | 'replace', ...args: any[]) => any;
-		onhistorychanged?: (this: Script<C, M>, type: 'pushed' | 'replaced', ...args: any[]) => any;
-		methods?: (this: Script<C>) => M;
+		onstart?: (this: Script<E, C, M>, ...args: any) => any;
+		onactive?: (this: Script<E, C, M>, ...args: any) => any;
+		oncomplete?: (this: Script<E, C, M>, ...args: any) => any;
+		onhashchange?: (this: Script<E, C, M>, ...args: any) => any;
+		onbeforeunload?: (this: Script<E, C, M>, ...args: any) => any;
+		onrender?: (this: Script<E, C, M>, elements: { panel: ScriptPanelElement; header: HeaderElement }) => any;
+		onhistorychange?: (this: Script<E, C, M>, type: 'push' | 'replace', ...args: any[]) => any;
+		onhistorychanged?: (this: Script<E, C, M>, type: 'pushed' | 'replaced', ...args: any[]) => any;
+		methods?: (this: Script<E, C, M>) => M;
 	}) {
 		super();
 		this.name = name;
@@ -251,10 +253,11 @@ export class Script<
 				return func?.apply(this, args);
 			} catch (err) {
 				console.error(err);
+				// 框架内部固定触发 scripterror，泛型事件表下 Parameters<E[K]> 无法解析，此处断言绕过
 				if (err instanceof Error) {
-					this.emit('scripterror', err.message);
+					(this.emit as any)('scripterror', err.message);
 				} else {
-					this.emit('scripterror', String(err));
+					(this.emit as any)('scripterror', String(err));
 				}
 			}
 		};

@@ -599,7 +599,32 @@ script.on('complete', () => { ... });
 script.emit('render', { panel, header });
 ```
 
-事件名见 [ScriptEvent](src/interfaces/script.ts#L41)。注意 `script.event`（Node EventEmitter）是独立机制，用于自定义业务事件，避免与生命周期事件名冲突。
+事件名见 [ScriptEvent](src/interfaces/script.ts#L41)。
+
+#### 自定义事件
+
+`Script` 的**第一个泛型参数**即自定义事件表，显式指定即可；其余两个泛型（configs / methods）仍由构造参数自动推导：
+
+```ts
+type MyEvents = {
+    'user-login': (name: string) => void;
+};
+
+const script = new Script<MyEvents>({
+    name: '示例',
+    matches: [],
+    configs: { count: { defaultValue: 1 } },   // C 自动推导
+    methods() {
+        return { greet: (name: string) => name }; // M 自动推导
+    },
+});
+
+script.emit('user-login', 'tom');  // ✅ 类型安全
+script.cfg.count;                   // ✅ 推导为 number
+script.methods.greet('world');      // ✅ 推导存在
+```
+
+> 注意：`script.event`（Node EventEmitter）是独立机制，无类型检查，推荐优先使用上述类型安全方式。
 
 ### 4.2 配置变更事件
 
