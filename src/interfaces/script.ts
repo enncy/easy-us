@@ -214,6 +214,30 @@ export class Script<
 	}
 
 	/**
+	 * 指定自定义事件表（类型级操作，无运行时开销）。
+	 *
+	 * 由于 TypeScript 不支持部分泛型推导（`new Script<MyEvents>(...)` 显式指定第一个泛型后，
+	 * configs / methods 的类型推导会失效并回退默认值），推荐在构造后通过此方法指定事件表：
+	 *
+	 * @example
+	 * ```ts
+	 * const script = new Script({
+	 *     name: 'demo',
+	 *     matches: [],
+	 *     configs: { count: { defaultValue: 1 } },
+	 * }).withEvents<{
+	 *     'user-login': (name: string) => void;
+	 * }>();
+	 *
+	 * script.emit('user-login', 'tom'); // ✅ 事件类型安全
+	 * script.cfg.count;                 // ✅ configs 推导保留
+	 * ```
+	 */
+	withEvents<NE extends Record<string, (...args: any[]) => any>>(): Script<NE, C, M> {
+		return this as unknown as Script<NE, C, M>;
+	}
+
+	/**
 	 * 隐藏脚本页（菜单栏下拉框与面板中不再显示）
 	 */
 	hidePanel() {
